@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <array name="morning_initial_slider_values">
+        <item>7.0</item>
+        <item>12.0</item>
+    </array>
+
+    <array name="evening_initial_slider_values">
+        <item>16.0</item>
+        <item>24.0</item>
+    </array>
+</resources>

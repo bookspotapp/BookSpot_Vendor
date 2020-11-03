@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "889048432333",
+    "firebase_url": "https://vendor-22662.firebaseio.com",
+    "project_id": "vendor-22662",
+    "storage_bucket": "vendor-22662.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:889048432333:android:089b27038b370a00427384",
+        "android_client_info": {
+          "package_name": "com.bookspot.app.vendor"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "889048432333-4n1palsfio54tpuvckgp4qv33f1a18qa.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.bookspot.app.vendor",
+            "certificate_hash": "d139aed58df21d8468e0b5495f6ae1a6b476d9d0"
+          }
+        },
+        {
+          "client_id": "889048432333-da93olec21pb1npkvhu7rm0t66ud4tl9.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCrAn1vCSOxGMukru9B64FdOktxB9MEcu4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "889048432333-da93olec21pb1npkvhu7rm0t66ud4tl9.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

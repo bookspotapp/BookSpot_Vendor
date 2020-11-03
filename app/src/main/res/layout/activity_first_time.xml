@@ -1,0 +1,321 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".FirstTime">
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/cardView2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="40dp"
+        android:elevation="2dp"
+        app:cardCornerRadius="150dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <androidx.cardview.widget.CardView
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:layout_margin="10dp"
+                android:elevation="2dp"
+                app:cardCornerRadius="150dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <ImageView
+                    android:id="@+id/add_img"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center"
+                    android:src="@drawable/camera" />
+            </androidx.cardview.widget.CardView>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.cardview.widget.CardView>
+
+    <TextView
+        android:id="@+id/firm_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Welcome Abcd"
+        android:textColor="#000000"
+        android:layout_marginTop="20dp"
+        android:textSize="20sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/cardView2" />
+
+
+    <TextView
+        android:id="@+id/textView4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="40dp"
+        android:text="Manage Your Queue"
+        android:textColor="#000000"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/firm_name" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:scrollbars="vertical"
+        app:layout_constraintBottom_toTopOf="@+id/submit"
+        app:layout_constraintTop_toBottomOf="@+id/textView4">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <EditText
+                android:id="@+id/tokens"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="20dp"
+                android:inputType="number"
+                android:ems="5"
+                android:textSize="20sp"
+                app:layout_constraintBottom_toBottomOf="@+id/textView5"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/textView5" />
+
+            <EditText
+                android:id="@+id/day"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="20dp"
+                android:ems="5"
+                android:textSize="20sp"
+                app:layout_constraintBottom_toBottomOf="@+id/textView6"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/textView6" />
+
+            <TextView
+                android:id="@+id/textView5"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="30dp"
+                android:layout_marginStart="20dp"
+                android:text="Daily Token Limit :"
+                android:textColor="#000000"
+                android:textSize="20sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/textView6"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="40dp"
+                android:text="Start Date :"
+                android:textColor="#000000"
+                android:textSize="20sp"
+                app:layout_constraintStart_toStartOf="@+id/textView5"
+                app:layout_constraintTop_toBottomOf="@+id/textView5" />
+
+            <TextView
+                android:id="@+id/timings"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:text="Morning "
+                android:textColor="#000000"
+                android:textSize="15sp"
+                app:layout_constraintStart_toStartOf="@+id/firm_timings"
+                app:layout_constraintTop_toBottomOf="@+id/firm_timings" />
+
+            <EditText
+                android:id="@+id/fmor"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:ems="5"
+                android:textSize="15sp"
+                android:layout_marginStart="30dp"
+                android:layout_marginTop="10dp"
+                app:layout_constraintStart_toStartOf="@+id/timings"
+                app:layout_constraintTop_toBottomOf="@id/timings" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/bt_fmor"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:backgroundTint="@color/orange"
+                android:elevation="5dp"
+                android:text="From"
+                android:textColor="#ffffff"
+                app:cornerRadius="10dp"
+                app:layout_constraintBottom_toBottomOf="@+id/fmor"
+                app:layout_constraintEnd_toEndOf="@+id/fmor"
+                app:layout_constraintStart_toStartOf="@+id/fmor"
+                app:layout_constraintTop_toTopOf="@+id/fmor" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="to"
+                android:textColor="#000000"
+                android:textSize="20sp"
+                app:layout_constraintBottom_toBottomOf="@+id/lmor"
+                app:layout_constraintEnd_toStartOf="@+id/lmor"
+                app:layout_constraintStart_toEndOf="@+id/fmor"
+                app:layout_constraintTop_toTopOf="@+id/lmor" />
+
+            <EditText
+                android:id="@+id/lmor"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="50dp"
+                android:layout_marginTop="10dp"
+                android:ems="5"
+                android:textSize="15sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/timings" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/bt_lmor"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:backgroundTint="@color/orange"
+                android:elevation="5dp"
+                android:text="TO"
+                android:textColor="#ffffff"
+                app:cornerRadius="10dp"
+                app:layout_constraintBottom_toBottomOf="@+id/lmor"
+                app:layout_constraintEnd_toEndOf="@+id/lmor"
+                app:layout_constraintStart_toStartOf="@+id/lmor"
+                app:layout_constraintTop_toTopOf="@+id/lmor" />
+
+            <TextView
+                android:id="@+id/timings1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Evening"
+                android:layout_marginTop="20dp"
+                android:textColor="#000000"
+                android:textSize="15sp"
+                app:layout_constraintStart_toStartOf="@+id/firm_timings"
+                app:layout_constraintTop_toBottomOf="@+id/fmor" />
+
+            <EditText
+                android:id="@+id/feve"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="30dp"
+                android:layout_marginTop="20dp"
+                android:ems="5"
+                android:textSize="15sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="@+id/timings1"
+                app:layout_constraintTop_toBottomOf="@id/timings1" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/bt_feve"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:backgroundTint="@color/orange"
+                android:elevation="5dp"
+                android:text="From"
+                android:textColor="#ffffff"
+                app:cornerRadius="10dp"
+                app:layout_constraintBottom_toBottomOf="@+id/feve"
+                app:layout_constraintEnd_toEndOf="@+id/feve"
+                app:layout_constraintStart_toStartOf="@+id/feve"
+                app:layout_constraintTop_toTopOf="@+id/feve" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="to"
+                android:textColor="#000000"
+                android:textSize="20sp"
+                app:layout_constraintBottom_toBottomOf="@+id/leve"
+                app:layout_constraintEnd_toStartOf="@+id/leve"
+                app:layout_constraintStart_toEndOf="@+id/feve"
+                app:layout_constraintTop_toTopOf="@+id/feve" />
+
+            <EditText
+                android:id="@+id/leve"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="50dp"
+                android:layout_marginTop="10dp"
+                android:ems="5"
+                android:textSize="15sp"
+                app:layout_constraintBottom_toBottomOf="@+id/feve"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/feve" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/bt_leve"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:backgroundTint="@color/orange"
+                android:elevation="5dp"
+                android:text="TO"
+                android:textColor="#ffffff"
+                app:cornerRadius="10dp"
+                app:layout_constraintBottom_toBottomOf="@+id/leve"
+                app:layout_constraintEnd_toEndOf="@+id/leve"
+                app:layout_constraintStart_toStartOf="@+id/leve"
+                app:layout_constraintTop_toTopOf="@+id/leve" />
+
+            <TextView
+                android:id="@+id/firm_timings"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="30dp"
+                android:text="Firm Timings"
+                android:textColor="#000000"
+                android:textSize="20sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/textView6" />
+
+
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/pick_date"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:backgroundTint="@color/orange"
+                android:elevation="5dp"
+                android:text="Pick Date"
+                android:textColor="#ffffff"
+                app:cornerRadius="10dp"
+                app:layout_constraintBottom_toBottomOf="@+id/day"
+                app:layout_constraintEnd_toEndOf="@+id/day"
+                app:layout_constraintStart_toStartOf="@+id/day"
+                app:layout_constraintTop_toTopOf="@+id/day" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </ScrollView>
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/submit"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="30dp"
+        android:backgroundTint="@color/orange"
+        android:paddingHorizontal="30dp"
+        android:paddingVertical="15dp"
+        android:text="Submit"
+        android:textColor="#ffffff"
+        android:textSize="20dp"
+        app:cornerRadius="20dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
