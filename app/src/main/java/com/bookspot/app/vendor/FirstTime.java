@@ -40,6 +40,8 @@ import android.widget.TimePicker;
 import android.widget.Toast;
 
 import com.bookspot.app.vendor.SplashScreen;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.slider.LabelFormatter;
 import com.google.android.material.slider.RangeSlider;
@@ -48,6 +50,9 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
 import java.io.ByteArrayOutputStream;
 import java.io.FileDescriptor;
@@ -62,6 +67,7 @@ public class FirstTime extends AppCompatActivity implements View.OnClickListener
     MaterialButton pick_date, submit, bt_fmor, bt_lmor, bt_feve, bt_leve;
     String date, activity, img, total_token;
     ImageView add_image;
+    Bitmap final_img;
     int GET_IMAGE = 786;
     int REQUEST_PERMISSION_LOCATION = 234;
     double lat, lng;
@@ -292,7 +298,6 @@ public class FirstTime extends AppCompatActivity implements View.OnClickListener
             sharedPreferences.edit().putBoolean("vibrate", true).apply();
             sharedPreferences.edit().putBoolean("next", true).apply();
 
-            SplashScreen.vendor.setImage(img);
             SplashScreen.vendor.setTotal_tokens(total_token);
             SplashScreen.vendor.setSdate(date);
             SplashScreen.vendor.setStime(timming);
@@ -304,13 +309,56 @@ public class FirstTime extends AppCompatActivity implements View.OnClickListener
             DatabaseReference ref = FirebaseDatabase.getInstance().getReference("vendors");
             ref.child(SplashScreen.vendor.getUID()).setValue(SplashScreen.vendor);
 
+            SplashScreen.vendor.setImage(img);
+
+            saveDataToStorage();
+            saveDataToSepDB();
+            
             DatabaseReference orders = FirebaseDatabase.getInstance().getReference("orders/" + SplashScreen.vendor.getUID());
             orders.child("tkn").setValue(0);
+            orders.child("tkn_d").setValue(0);
 
             startActivity(new Intent(FirstTime.this, MainActivity.class));
         } else {
-            Toast.makeText(FirstTime.this, "Please select timings of your firn", Toast.LENGTH_SHORT).show();
+            Toast.makeText(FirstTime.this, "Please select timings of your firm", Toast.LENGTH_SHORT).show();
         }
+    }
+
+    private void saveDataToSepDB() {
+        Container_Class.Det det = new Container_Class.Det(
+                SplashScreen.vendor.getFname(),
+                SplashScreen.vendor.getUID(),
+                SplashScreen.vendor.getLat(),
+                SplashScreen.vendor.getLng());
+
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("det");
+        ref.child("vendors").child(SplashScreen.vendor.getCat()).child(SplashScreen.vendor.getUID()).setValue(det);
+        System.out.println("\n details has been saved to the seperate section of database");
+    }
+
+    private void saveDataToStorage() {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        final_img.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+        byte[] data = baos.toByteArray();
+
+        StorageReference storageRef = FirebaseStorage.getInstance().getReferenceFromUrl("gs://vendor-22662.appspot.com");
+        StorageReference logoRef =  storageRef.child("vendors/"+ SplashScreen.vendor.getUID() + "/logo.jpg");
+
+        UploadTask uploadTask = logoRef.putBytes(data);
+        uploadTask.addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception exception) {
+                // Handle unsuccessful uploads
+                exception.printStackTrace();
+                System.out.println("\n Failure in storage exception = ");
+            }
+        }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+            @Override
+            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                // taskSnapshot.getMetadata() contains file metadata such as size, content-type, and download URL.
+                System.out.println("\n Image has been added to the storage");
+            }
+        });
     }
 
     @Override
@@ -327,6 +375,7 @@ public class FirstTime extends AppCompatActivity implements View.OnClickListener
                 // TODO Auto-generated catch block
                 e.printStackTrace();
             }
+            final_img = bmp;
             add_image.setImageBitmap(bmp);
             img = changeBitmapToStrinng(bmp);
         }

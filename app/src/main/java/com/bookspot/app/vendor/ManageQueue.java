@@ -155,8 +155,8 @@ public class ManageQueue extends AppCompatActivity implements View.OnClickListen
                    System.out.println("\n op_off = " + op_off);
 
                    DatabaseReference ref = FirebaseDatabase.getInstance().getReference("vendors/" + SplashScreen.vendor.getUID());
-                   ref.child("timing").setValue(timming);
-                   ref.child("lunch").setValue(ltiming);
+                   ref.child("stime").setValue(timming);
+                   ref.child("ltiming").setValue(ltiming);
                    ref.child("total_tokens").setValue(tkn);
                    ref.child("sbkd").setValue(bkds);
                    ref.child("op").setValue(op);

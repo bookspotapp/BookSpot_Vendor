@@ -25,9 +25,14 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.button.MaterialButton;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
 import java.io.ByteArrayOutputStream;
 import java.io.FileDescriptor;
@@ -39,6 +44,7 @@ public class ProfileSettings extends AppCompatActivity implements View.OnClickLi
     EditText fname, cno, email, add;
     TextView save, add_img;
     String image;
+    Bitmap final_img;
     int GET_IMAGE = 123;
 
     @Override
@@ -107,13 +113,46 @@ public class ProfileSettings extends AppCompatActivity implements View.OnClickLi
                     ref.child("email").setValue(Email);
                     ref.child("cno").setValue(Cno);
                     ref.child("fname").setValue(Fname);
-                    ref.child("img").setValue(image);
                     ref.child("add").setValue(Add);
+
+                    DatabaseReference detRef = FirebaseDatabase.getInstance().getReference("det/vendors/"+SplashScreen.vendor.getCat()+"/"+ SplashScreen.vendor.getUID());
+                    detRef.child("nm").setValue(Fname);
+                    detRef.child("lat").setValue(Fname);
+                    detRef.child("lng").setValue(Fname);
+
+
+                    if(final_img != null)
+                        saveDataToStorage();
 
                     Toast.makeText(ProfileSettings.this, "Data Saved", Toast.LENGTH_SHORT).show();
                     finish();
                 }
         }
+    }
+
+    private void saveDataToStorage() {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        final_img.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+        byte[] data = baos.toByteArray();
+
+        StorageReference storageRef = FirebaseStorage.getInstance().getReferenceFromUrl("gs://vendor-22662.appspot.com");
+        StorageReference logoRef =  storageRef.child("vendors/"+ SplashScreen.vendor.getUID() + "/logo.jpg");
+
+        UploadTask uploadTask = logoRef.putBytes(data);
+        uploadTask.addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception exception) {
+                // Handle unsuccessful uploads
+                exception.printStackTrace();
+                System.out.println("\n Failure in storage exception = ");
+            }
+        }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+            @Override
+            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                // taskSnapshot.getMetadata() contains file metadata such as size, content-type, and download URL.
+                System.out.println("\n Image has been added to the storage");
+            }
+        });
     }
 
     public void checkPermission(String permission, int requestCode) {
@@ -156,6 +195,7 @@ public class ProfileSettings extends AppCompatActivity implements View.OnClickLi
                 e.printStackTrace();
             }
             img.setImageBitmap(bmp);
+            final_img = bmp;
             image = changeBitmapToStrinng(bmp);
         }
     }

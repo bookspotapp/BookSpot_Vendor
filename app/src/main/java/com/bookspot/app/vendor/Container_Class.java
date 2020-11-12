@@ -4,19 +4,30 @@ public class Container_Class {
 
     public static class NewBooking{
         private int tkn, sbk;
-        private String bTime, sType, name, cno, UID;
+        private String bTime, bDate, sType, name, cno, UID;
+        private boolean com;
 
-        public NewBooking(int tkn, int sbk, String bTime, String sType, String name, String cno, String UID) {
+        public NewBooking(int tkn, int sbk, String bTime, String bDate, String sType, String name, String cno, String UID, boolean com) {
             this.tkn = tkn;
             this.sbk = sbk;
             this.bTime = bTime;
             this.sType = sType;
+            this.bDate = bDate;
             this.name = name;
             this.cno = cno;
             this.UID = UID;
+            this.com = com;
         }
 
         public NewBooking() {
+        }
+
+        public String getbDate() {
+            return bDate;
+        }
+
+        public void setbDate(String bDate) {
+            this.bDate = bDate;
         }
 
         public String getUID() {
@@ -250,6 +261,102 @@ public class Container_Class {
 
         public void setStime(String stime) {
             this.stime = stime;
+        }
+    }
+
+    static class Det{
+        String nm, uid;
+        double lat, lng;
+
+        public Det(String nm, String uid, double lat, double lng) {
+            this.nm = nm;
+            this.uid = uid;
+            this.lat = lat;
+            this.lng = lng;
+        }
+
+        public String getNm() {
+            return nm;
+        }
+
+        public void setNm(String nm) {
+            this.nm = nm;
+        }
+
+        public String getUid() {
+            return uid;
+        }
+
+        public void setUid(String uid) {
+            this.uid = uid;
+        }
+
+        public double getLat() {
+            return lat;
+        }
+
+        public void setLat(double lat) {
+            this.lat = lat;
+        }
+
+        public double getLng() {
+            return lng;
+        }
+
+        public void setLng(double lng) {
+            this.lng = lng;
+        }
+    }
+
+    static class CustomerSideOrder{
+        private String fname, Stype, dt, tm, vid;
+
+        public CustomerSideOrder(String fname, String stype, String dt, String tm, String vid) {
+            this.fname = fname;
+            this.Stype = stype;
+            this.dt = dt;
+            this.tm = tm;
+            this.vid = vid;
+        }
+
+        public String getVid() {
+            return vid;
+        }
+
+        public void setVid(String vid) {
+            this.vid = vid;
+        }
+
+        public String getFname() {
+            return fname;
+        }
+
+        public void setFname(String fname) {
+            this.fname = fname;
+        }
+
+        public String getStype() {
+            return Stype;
+        }
+
+        public void setStype(String stype) {
+            Stype = stype;
+        }
+
+        public String getDt() {
+            return dt;
+        }
+
+        public void setDt(String dt) {
+            this.dt = dt;
+        }
+
+        public String getTm() {
+            return tm;
+        }
+
+        public void setTm(String tm) {
+            this.tm = tm;
         }
     }
 }

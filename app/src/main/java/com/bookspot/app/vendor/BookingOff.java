@@ -13,6 +13,9 @@ import android.view.ViewGroup;
 import android.widget.CompoundButton;
 import android.widget.TextView;
 
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+
 /**
  * A simple {@link Fragment} subclass.
  * Use the {@link BookingOff#newInstance} factory method to
@@ -95,6 +98,12 @@ public class BookingOff extends Fragment {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if(isChecked){
                     sharedPreferences.edit().putBoolean("booking", true).apply();
+
+                    DatabaseReference statusRef = FirebaseDatabase.getInstance()
+                            .getReference("det/vendors/"+ SplashScreen.vendor.getCat()
+                                    + "/" + SplashScreen.vendor.getUID());
+                    statusRef.child("status").setValue(1);
+
                     tv9.setVisibility(View.INVISIBLE);
                     tv10.setVisibility(View.INVISIBLE);
                     switch_on.setVisibility(View.INVISIBLE);

@@ -9,9 +9,12 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Base64;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -20,6 +23,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.TaskExecutors;
 import com.google.android.material.button.MaterialButton;
@@ -33,7 +38,10 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
+import java.io.ByteArrayOutputStream;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Pattern;
 
@@ -186,7 +194,7 @@ public class Verification extends AppCompatActivity {
                                         intent.putExtra("activity", "verification");
                                         startActivity(intent);
                                         finish();
-                                    } else if(vendor.getServices() != null && vendor.getImage() == null ) {
+                                    } else if(vendor.getServices() != null && vendor.getSdate() == null ) {
                                         SplashScreen.vendor = vendor;
                                         sharedPreferences.edit().putString("fname", vendor.getFname()).apply();
                                         sharedPreferences.edit().putString("add", vendor.getAdd()).apply();
@@ -199,7 +207,7 @@ public class Verification extends AppCompatActivity {
                                         intent.putExtra("activity", "verification");
                                         startActivity(intent);
                                         finish();
-                                    } else if(vendor.getImage() != null){
+                                    } else if(vendor.getSdate() != null){
                                         SplashScreen.vendor = vendor;
                                         sharedPreferences.edit().putString("fname", vendor.getFname()).apply();
                                         sharedPreferences.edit().putString("add", vendor.getAdd()).apply();
@@ -208,7 +216,6 @@ public class Verification extends AppCompatActivity {
                                         sharedPreferences.edit().putString("addno", vendor.getAddno()).apply();
                                         sharedPreferences.edit().putString("cat", vendor.getCat()).apply();
                                         sharedPreferences.edit().putString("services", vendor.getServices()).apply();
-                                        sharedPreferences.edit().putString("img", vendor.getImage()).apply();
                                         sharedPreferences.edit().putString("total_token", vendor.getTotal_tokens()).apply();
                                         sharedPreferences.edit().putString("sdate", vendor.getSdate()).apply();
                                         sharedPreferences.edit().putString("stime", vendor.getStime()).apply();
@@ -216,6 +223,9 @@ public class Verification extends AppCompatActivity {
                                         sharedPreferences.edit().putString("lat", String.valueOf(vendor.getLat())).apply();
                                         sharedPreferences.edit().putString("lng", String.valueOf(vendor.getLng())).apply();
                                         sharedPreferences.edit().putString("rat", "0,0,0,0,0").apply();
+
+                                        setImageStrind();
+
                                         Intent intent = new Intent(Verification.this, MainActivity.class);
                                         intent.putExtra("activity", "verification");
                                         startActivity(intent);
@@ -249,6 +259,35 @@ public class Verification extends AppCompatActivity {
                             Toast.makeText(Verification.this, task.getException().getMessage(), Toast.LENGTH_LONG).show();
                             verify.setVisibility(View.VISIBLE);
                         }
+                    }
+
+                    private void setImageStrind() {
+                        StorageReference storageReference = FirebaseStorage.getInstance().getReference();
+                        StorageReference photoReference= storageReference.child("vendors/" + SplashScreen.vendor.getUID() + "/logo.jpg");
+
+                        final Bitmap[] bmp = new Bitmap[1];
+                        final long ONE_MEGABYTE = 1024 * 1024;
+                        photoReference.getBytes(ONE_MEGABYTE).addOnSuccessListener(new OnSuccessListener<byte[]>() {
+                            @Override
+                            public void onSuccess(byte[] bytes) {
+                                bmp[0] = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+                                SharedPreferences sp = Verification.this.getSharedPreferences("user", MODE_PRIVATE);
+                                sp.edit().putString("img", changeBitmapToStrinng(bmp[0]));
+                                SplashScreen.vendor.setImage(changeBitmapToStrinng(bmp[0]));
+                            }
+                        }).addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception exception) {
+                                Toast.makeText(getApplicationContext(), "No Such file or Path found!!", Toast.LENGTH_LONG).show();
+                            }
+                        });
+                    }
+
+                    private String changeBitmapToStrinng(Bitmap bitmap) {
+                        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                        bitmap.compress(Bitmap.CompressFormat.PNG, 100, baos);
+                        String imageEncoded = Base64.encodeToString(baos.toByteArray(), Base64.DEFAULT);
+                        return imageEncoded;
                     }
 
                 });

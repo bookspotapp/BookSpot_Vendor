@@ -4,8 +4,6 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -139,6 +137,11 @@ public class BookingOn extends Fragment {
                 if(!isChecked) {
                     sharedPreferences.edit().putBoolean("booking", false).apply();
 
+                    DatabaseReference statusRef = FirebaseDatabase.getInstance()
+                            .getReference("det/vendors/"+ SplashScreen.vendor.getCat()
+                                    + "/" + SplashScreen.vendor.getUID());
+                    statusRef.child("status").setValue(0);
+
                     DatabaseReference ref = FirebaseDatabase.getInstance().getReference("orders/"+ SplashScreen.vendor.getUID() );
                     ref.child("order").addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
@@ -253,7 +256,7 @@ public class BookingOn extends Fragment {
             //getting the product of the specified position
             final Container_Class.NewBooking newBooking = list.get(position);
 
-            final DatabaseReference ref = FirebaseDatabase.getInstance().getReference("cust/" + newBooking.getUID());
+            final DatabaseReference ref = FirebaseDatabase.getInstance().getReference("customers/" + newBooking.getUID());
             final DatabaseReference order = FirebaseDatabase.getInstance().getReference("orders/" + SplashScreen.vendor.getUID()+ "/order");
             holder.tkn.setText("Token No. :- " + newBooking.getTkn());
             holder.cname.setText("Customer Name :- " + newBooking.getName());

@@ -27,7 +27,7 @@ public class SplashScreen extends AppCompatActivity {
         vendor = new Container_Class.Vendor();
 
         Handler handler = new Handler();
-        handler.postDelayed(new Runnable() {
+      /*  handler.postDelayed(new Runnable() {
             @Override
             public void run() {
                 SharedPreferences sharedPreferences = SplashScreen.this.getSharedPreferences("user", MODE_PRIVATE);
@@ -90,6 +90,15 @@ public class SplashScreen extends AppCompatActivity {
                     startActivity(new Intent( SplashScreen.this, Register.class));
 
                 finish();
+            }
+        }, 2000);
+
+       */
+
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                startActivity(new Intent(SplashScreen.this, Extra.class));
             }
         }, 2000);
     }
