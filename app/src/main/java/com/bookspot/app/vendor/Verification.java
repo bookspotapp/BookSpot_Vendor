@@ -3,6 +3,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.Activity;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.content.Context;
@@ -32,6 +33,7 @@ import com.google.firebase.FirebaseException;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.PhoneAuthCredential;
+import com.google.firebase.auth.PhoneAuthOptions;
 import com.google.firebase.auth.PhoneAuthProvider;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -61,7 +63,7 @@ public class Verification extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_verification);
 
-        createNotificationChannel();
+        //createNotificationChannel();
         back = (ImageView) findViewById(R.id.back_arrow);
         otp = (EditText) findViewById(R.id.otp);
         verify = (MaterialButton) findViewById(R.id.verify);
@@ -70,7 +72,7 @@ public class Verification extends AppCompatActivity {
         resend.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                sendVerificationCode("+91" + Register.c_no);
+                sendVerificationCode(Register.c_no);
             }
         });
         resend.setVisibility(View.INVISIBLE);
@@ -113,7 +115,7 @@ public class Verification extends AppCompatActivity {
             }
         };
 
-        sendVerificationCode("+91" + Register.c_no);
+        sendVerificationCode(Register.c_no);
 
         verify.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -124,7 +126,7 @@ public class Verification extends AppCompatActivity {
                 resend.setVisibility(View.INVISIBLE);
 
                 if(OTP.isEmpty() && OTP.length() != 6)
-                    otp.setError("Enter the OTP");
+                    otp.setError("Enter the correct OTP");
                 else {
                     verifyCode(OTP);
                 }
@@ -138,7 +140,7 @@ public class Verification extends AppCompatActivity {
                 number,
                 60,
                 TimeUnit.SECONDS,
-                TaskExecutors.MAIN_THREAD,
+                Verification.this,
                 mCallBack
         );
     }
@@ -173,17 +175,7 @@ public class Verification extends AppCompatActivity {
                                 @Override
                                 public void onDataChange(@NonNull DataSnapshot snapshot) {
                                     Container_Class.Vendor vendor = snapshot.getValue(Container_Class.Vendor.class);
-                                    if(vendor == null) {
-                                        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("vendors");
-                                        reference.child(mAuth.getCurrentUser().getUid()).setValue(SplashScreen.vendor);
-                                        SplashScreen.vendor = new Container_Class.Vendor(
-                                                Register.c_no,
-                                                Register.o_name,
-                                                mAuth.getCurrentUser().getUid()
-                                        );
-                                        startActivity(new Intent(Verification.this, AddBusiness.class));
-                                        finish();
-                                    }else if(vendor != null && vendor.getServices() == null){
+                                    if(vendor != null && vendor.getServices() == null){
                                         SplashScreen.vendor = vendor;
                                         sharedPreferences.edit().putString("fname", vendor.getFname()).apply();
                                         sharedPreferences.edit().putString("add", vendor.getAdd()).apply();
@@ -194,7 +186,7 @@ public class Verification extends AppCompatActivity {
                                         intent.putExtra("activity", "verification");
                                         startActivity(intent);
                                         finish();
-                                    } else if(vendor.getServices() != null && vendor.getSdate() == null ) {
+                                    } else if(vendor != null && vendor.getServices() != null && vendor.getSdate() == null ) {
                                         SplashScreen.vendor = vendor;
                                         sharedPreferences.edit().putString("fname", vendor.getFname()).apply();
                                         sharedPreferences.edit().putString("add", vendor.getAdd()).apply();
@@ -207,7 +199,7 @@ public class Verification extends AppCompatActivity {
                                         intent.putExtra("activity", "verification");
                                         startActivity(intent);
                                         finish();
-                                    } else if(vendor.getSdate() != null){
+                                    } else if(vendor != null && vendor.getSdate() != null){
                                         SplashScreen.vendor = vendor;
                                         sharedPreferences.edit().putString("fname", vendor.getFname()).apply();
                                         sharedPreferences.edit().putString("add", vendor.getAdd()).apply();
@@ -216,12 +208,13 @@ public class Verification extends AppCompatActivity {
                                         sharedPreferences.edit().putString("addno", vendor.getAddno()).apply();
                                         sharedPreferences.edit().putString("cat", vendor.getCat()).apply();
                                         sharedPreferences.edit().putString("services", vendor.getServices()).apply();
-                                        sharedPreferences.edit().putString("total_token", vendor.getTotal_tokens()).apply();
+                                        sharedPreferences.edit().putString("total_tokens", vendor.getTotal_tokens()).apply();
                                         sharedPreferences.edit().putString("sdate", vendor.getSdate()).apply();
                                         sharedPreferences.edit().putString("stime", vendor.getStime()).apply();
                                         sharedPreferences.edit().putString("ltiming", vendor.getLtiming()).apply();
                                         sharedPreferences.edit().putString("lat", String.valueOf(vendor.getLat())).apply();
                                         sharedPreferences.edit().putString("lng", String.valueOf(vendor.getLng())).apply();
+                                        sharedPreferences.edit().putString("op", vendor.getOp()).apply();
                                         sharedPreferences.edit().putString("rat", "0,0,0,0,0").apply();
 
                                         setImageStrind();
@@ -230,9 +223,21 @@ public class Verification extends AppCompatActivity {
                                         intent.putExtra("activity", "verification");
                                         startActivity(intent);
                                         finish();
+                                    }else{
+                                        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("vendors");
+                                        SplashScreen.vendor.setLat(0.0);
+                                        SplashScreen.vendor.setLng(0.0);
+                                        reference.child(mAuth.getCurrentUser().getUid()).setValue(SplashScreen.vendor);
+                                        SplashScreen.vendor = new Container_Class.Vendor(
+                                                Register.c_no,
+                                                Register.o_name,
+                                                mAuth.getCurrentUser().getUid()
+                                        );
+                                        startActivity(new Intent(Verification.this, AddBusiness.class));
+                                        finish();
                                     }
 
-                                    System.out.println("\n inside verification" +
+                                        System.out.println("\n inside verification" +
                                             "\n oname = "+ sharedPreferences.getString("oname", "") +
                                             "\n UID = " +sharedPreferences.getString("UID", "") +
                                             "\n fname = " +sharedPreferences.getString("fname", "") +
@@ -292,7 +297,7 @@ public class Verification extends AppCompatActivity {
 
                 });
     }
-
+/*
     private void createNotificationChannel() {
         // Create the NotificationChannel, but only on API 26+ because
         // the NotificationChannel class is new and not in the support library
@@ -302,6 +307,8 @@ public class Verification extends AppCompatActivity {
             int importance = NotificationManager.IMPORTANCE_HIGH;
             NotificationChannel channel = new NotificationChannel(SplashScreen.CHANNEL_ID, name, importance);
             channel.setDescription(description);
+            channel.setVibrationPattern(new long[] { 1000, 1500, 1000, 1500, 1000 });
+            channel.enableVibration(true);
             // Register the channel with the system; you can't change the importance
             // or other notification behaviors after this
             NotificationManager notificationManager = getSystemService(NotificationManager.class);
@@ -309,6 +316,8 @@ public class Verification extends AppCompatActivity {
         }
     }
 
+
+ */
     @Override
     public void onBackPressed() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);

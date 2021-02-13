@@ -27,7 +27,7 @@ public class SplashScreen extends AppCompatActivity {
         vendor = new Container_Class.Vendor();
 
         Handler handler = new Handler();
-      /*  handler.postDelayed(new Runnable() {
+        handler.postDelayed(new Runnable() {
             @Override
             public void run() {
                 SharedPreferences sharedPreferences = SplashScreen.this.getSharedPreferences("user", MODE_PRIVATE);
@@ -53,7 +53,7 @@ public class SplashScreen extends AppCompatActivity {
                         startActivity(new Intent(SplashScreen.this, Categories.class));
                     }
 
-                    else if(sharedPreferences.getString("img", "").equals("")) {
+                    else if(sharedPreferences.getString("sdate", "").equals("")) {
                         vendor.setOname(sharedPreferences.getString("oname", ""));
                         vendor.setUID(sharedPreferences.getString("UID", ""));
                         vendor.setFname(sharedPreferences.getString("fname", ""));
@@ -83,6 +83,7 @@ public class SplashScreen extends AppCompatActivity {
                         vendor.setSdate(sharedPreferences.getString("sdate", ""));
                         vendor.setStime(sharedPreferences.getString("stime", ""));
                         vendor.setRat(sharedPreferences.getString("rat", ""));
+                        vendor.setOp(sharedPreferences.getString("op", ""));
 
                         startActivity(new Intent(SplashScreen.this, MainActivity.class));
                     }
@@ -93,14 +94,7 @@ public class SplashScreen extends AppCompatActivity {
             }
         }, 2000);
 
-       */
 
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                startActivity(new Intent(SplashScreen.this, Extra.class));
-            }
-        }, 2000);
     }
 
     private void createNotificationChannel() {
@@ -112,6 +106,8 @@ public class SplashScreen extends AppCompatActivity {
             int importance = NotificationManager.IMPORTANCE_HIGH;
             NotificationChannel channel = new NotificationChannel(SplashScreen.CHANNEL_ID, name, importance);
             channel.setDescription(description);
+            channel.setVibrationPattern(new long[] { 1000, 1500, 1000, 1500, 1000 });
+            channel.enableVibration(true);
             // Register the channel with the system; you can't change the importance
             // or other notification behaviors after this
             NotificationManager notificationManager = getSystemService(NotificationManager.class);

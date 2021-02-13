@@ -10,6 +10,7 @@ import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -46,13 +47,14 @@ public class ProfileSettings extends AppCompatActivity implements View.OnClickLi
     String image;
     Bitmap final_img;
     int GET_IMAGE = 123;
+    SharedPreferences sharedPreferences;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile_settings);
-
-        createNotificationChannel();
+        sharedPreferences = ProfileSettings.this.getSharedPreferences("user", MODE_PRIVATE);
+        //createNotificationChannel();
         initializeit();
 
         back = (ImageView) findViewById(R.id.back_arrow);
@@ -105,10 +107,8 @@ public class ProfileSettings extends AppCompatActivity implements View.OnClickLi
                     fname.setError("Enter your Firm Name");
                 if(Add.isEmpty())
                     add.setError("Enter your Firm Address");
-                if(image.isEmpty())
-                    Toast.makeText(ProfileSettings.this, "Please select an image or\n logo of your Firm", Toast.LENGTH_SHORT).show();
 
-                if(!Email.isEmpty() && !Cno.isEmpty() && !Fname.isEmpty() && !Add.isEmpty() && image.isEmpty()){
+                if(!Email.isEmpty() && !Cno.isEmpty() && !Fname.isEmpty() && !Add.isEmpty() ){
                     DatabaseReference ref = FirebaseDatabase.getInstance().getReference("vendors/" + SplashScreen.vendor.getUID());
                     ref.child("email").setValue(Email);
                     ref.child("cno").setValue(Cno);
@@ -117,9 +117,16 @@ public class ProfileSettings extends AppCompatActivity implements View.OnClickLi
 
                     DatabaseReference detRef = FirebaseDatabase.getInstance().getReference("det/vendors/"+SplashScreen.vendor.getCat()+"/"+ SplashScreen.vendor.getUID());
                     detRef.child("nm").setValue(Fname);
-                    detRef.child("lat").setValue(Fname);
-                    detRef.child("lng").setValue(Fname);
 
+                    SplashScreen.vendor.setCno(Cno);
+                    SplashScreen.vendor.setFname(Fname);
+                    SplashScreen.vendor.setAdd(Add);
+                    SplashScreen.vendor.setEmail(Email);
+
+                    sharedPreferences.edit().putString("cno", Cno).apply();
+                    sharedPreferences.edit().putString("email", Email).apply();
+                    sharedPreferences.edit().putString("fname", Fname).apply();
+                    sharedPreferences.edit().putString("add", Add).apply();
 
                     if(final_img != null)
                         saveDataToStorage();
@@ -151,6 +158,8 @@ public class ProfileSettings extends AppCompatActivity implements View.OnClickLi
             public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                 // taskSnapshot.getMetadata() contains file metadata such as size, content-type, and download URL.
                 System.out.println("\n Image has been added to the storage");
+                SplashScreen.vendor.setImage(image);
+                sharedPreferences.edit().putString("img", image).apply();
             }
         });
     }
@@ -171,14 +180,13 @@ public class ProfileSettings extends AppCompatActivity implements View.OnClickLi
                                            @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
             // Checking whether user granted the permission or not.
-            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                Toast.makeText(ProfileSettings.this, "Storage Permission Granted", Toast.LENGTH_SHORT).show();
-                startActivityForResult(new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI), GET_IMAGE);
-            } else {
-                Toast.makeText(ProfileSettings.this, "Storage Permission Denied", Toast.LENGTH_SHORT).show();
-                finish();
-            }
+        if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            Toast.makeText(ProfileSettings.this, "Storage Permission Granted", Toast.LENGTH_SHORT).show();
+            startActivityForResult(new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI), GET_IMAGE);
+        } else {
+                Toast.makeText(ProfileSettings.this, "Storage Permission Denied", Toast.LENGTH_SHORT).show();finish();
         }
+    }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -219,7 +227,7 @@ public class ProfileSettings extends AppCompatActivity implements View.OnClickLi
         byte[] decodedByteArray = Base64.decode(image, Base64.DEFAULT);
         return BitmapFactory.decodeByteArray(decodedByteArray, 0, decodedByteArray.length);
     }
-
+/*
     private void createNotificationChannel() {
         // Create the NotificationChannel, but only on API 26+ because
         // the NotificationChannel class is new and not in the support library
@@ -229,10 +237,14 @@ public class ProfileSettings extends AppCompatActivity implements View.OnClickLi
             int importance = NotificationManager.IMPORTANCE_HIGH;
             NotificationChannel channel = new NotificationChannel(SplashScreen.CHANNEL_ID, name, importance);
             channel.setDescription(description);
+            channel.setVibrationPattern(new long[] { 1000, 1500, 1000, 1500, 1000 });
+            channel.enableVibration(true);
             // Register the channel with the system; you can't change the importance
             // or other notification behaviors after this
             NotificationManager notificationManager = getSystemService(NotificationManager.class);
             notificationManager.createNotificationChannel(channel);
         }
     }
+
+ */
 }

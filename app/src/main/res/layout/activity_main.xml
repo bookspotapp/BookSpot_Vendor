@@ -15,14 +15,13 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <fragment
-        android:id="@+id/booking"
-        android:name="com.bookspot.app.vendor.BookingOff"
+    <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
+        android:id="@+id/booking"
         android:layout_margin="20dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/menu"
-        tools:layout_editor_absoluteX="20dp" />
+        app:layout_constraintTop_toBottomOf="@+id/menu"/>
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

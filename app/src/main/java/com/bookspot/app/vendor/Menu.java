@@ -9,6 +9,9 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.google.firebase.FirebaseApp;
+import com.google.firebase.auth.FirebaseAuth;
+
 public class Menu extends AppCompatActivity implements View.OnClickListener {
 
     ImageView cross , back;
@@ -85,6 +88,7 @@ public class Menu extends AppCompatActivity implements View.OnClickListener {
                 sharedPreferences.edit().putString("rat", "").apply();
                 startActivity(new Intent(Menu.this, Register.class));
                 finishAffinity();
+                FirebaseAuth.getInstance().signOut();
                 break;
         }
     }

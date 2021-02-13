@@ -72,6 +72,9 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:scrollbars="vertical"
+        android:scrollbarFadeDuration="0"
+        android:scrollbarThumbHorizontal="@color/orange"
+        android:scrollbarAlwaysDrawVerticalTrack="true"
         app:layout_constraintBottom_toTopOf="@+id/submit"
         app:layout_constraintTop_toBottomOf="@+id/textView4">
 
@@ -79,17 +82,25 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-            <EditText
-                android:id="@+id/tokens"
-                android:layout_width="wrap_content"
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="20dp"
-                android:inputType="number"
-                android:ems="5"
-                android:textSize="20sp"
-                app:layout_constraintBottom_toBottomOf="@+id/textView5"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/textView5" />
+                android:hint="Maximum no. of Token per Slot"
+                app:hintTextColor="@color/orange"
+                app:boxStrokeColor="@color/orange"
+                android:id="@+id/textlayout"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_marginHorizontal="20dp"
+                android:layout_marginTop="20dp"
+                app:layout_constraintTop_toTopOf="parent">
+                <com.google.android.material.textfield.TextInputEditText
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:inputType="number"
+                    android:textAlignment="center"
+                    android:id="@+id/tkn"/>
+            </com.google.android.material.textfield.TextInputLayout>
+
 
             <EditText
                 android:id="@+id/day"
@@ -103,27 +114,15 @@
                 app:layout_constraintTop_toTopOf="@+id/textView6" />
 
             <TextView
-                android:id="@+id/textView5"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="30dp"
-                android:layout_marginStart="20dp"
-                android:text="Daily Token Limit :"
-                android:textColor="#000000"
-                android:textSize="20sp"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <TextView
                 android:id="@+id/textView6"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="40dp"
+                android:layout_marginTop="20dp"
                 android:text="Start Date :"
                 android:textColor="#000000"
                 android:textSize="20sp"
-                app:layout_constraintStart_toStartOf="@+id/textView5"
-                app:layout_constraintTop_toBottomOf="@+id/textView5" />
+                app:layout_constraintStart_toStartOf="@+id/textlayout"
+                app:layout_constraintTop_toBottomOf="@+id/textlayout" />
 
             <TextView
                 android:id="@+id/timings"
@@ -136,66 +135,141 @@
                 app:layout_constraintStart_toStartOf="@+id/firm_timings"
                 app:layout_constraintTop_toBottomOf="@+id/firm_timings" />
 
-            <EditText
-                android:id="@+id/fmor"
+            <HorizontalScrollView
+                android:id="@+id/hs_mor"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:ems="5"
-                android:textSize="15sp"
-                android:layout_marginStart="30dp"
+                android:layout_marginHorizontal="20dp"
                 android:layout_marginTop="10dp"
-                app:layout_constraintStart_toStartOf="@+id/timings"
-                app:layout_constraintTop_toBottomOf="@id/timings" />
-
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/bt_fmor"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:backgroundTint="@color/orange"
-                android:elevation="5dp"
-                android:text="From"
-                android:textColor="#ffffff"
-                app:cornerRadius="10dp"
-                app:layout_constraintBottom_toBottomOf="@+id/fmor"
-                app:layout_constraintEnd_toEndOf="@+id/fmor"
-                app:layout_constraintStart_toStartOf="@+id/fmor"
-                app:layout_constraintTop_toTopOf="@+id/fmor" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="to"
-                android:textColor="#000000"
-                android:textSize="20sp"
-                app:layout_constraintBottom_toBottomOf="@+id/lmor"
-                app:layout_constraintEnd_toStartOf="@+id/lmor"
-                app:layout_constraintStart_toEndOf="@+id/fmor"
-                app:layout_constraintTop_toTopOf="@+id/lmor" />
-
-            <EditText
-                android:id="@+id/lmor"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="50dp"
-                android:layout_marginTop="10dp"
-                android:ems="5"
-                android:textSize="15sp"
+                android:scrollbars="horizontal"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/timings" />
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/timings">
 
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/bt_lmor"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:backgroundTint="@color/orange"
-                android:elevation="5dp"
-                android:text="TO"
-                android:textColor="#ffffff"
-                app:cornerRadius="10dp"
-                app:layout_constraintBottom_toBottomOf="@+id/lmor"
-                app:layout_constraintEnd_toEndOf="@+id/lmor"
-                app:layout_constraintStart_toStartOf="@+id/lmor"
-                app:layout_constraintTop_toTopOf="@+id/lmor" />
+                <GridLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:columnCount="3"
+                    android:rowCount="3">
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/c6"
+                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginHorizontal="5dp"
+                        android:backgroundTint="@color/white"
+                        android:checkable="true"
+                        android:text="06 - 07 AM"
+                        android:textColor="@color/text_chip_color"
+                        app:chipStrokeColor="@color/text_chip_color"
+                        app:chipStrokeWidth="1dp" />
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/c7"
+                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginHorizontal="5dp"
+                        android:backgroundTint="@color/white"
+                        android:checkable="true"
+                        android:text="07 - 08 AM"
+                        android:textColor="@color/text_chip_color"
+                        app:chipStrokeColor="@color/text_chip_color"
+                        app:chipStrokeWidth="1dp" />
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/c8"
+                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginHorizontal="5dp"
+                        android:backgroundTint="@color/white"
+                        android:checkable="true"
+                        android:text="08 - 09 AM"
+                        android:textColor="@color/text_chip_color"
+                        app:chipStrokeColor="@color/text_chip_color"
+                        app:chipStrokeWidth="1dp" />
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/c9"
+                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginHorizontal="5dp"
+                        android:backgroundTint="@color/white"
+                        android:checkable="true"
+                        android:text="09 - 10 AM"
+                        android:textColor="@color/text_chip_color"
+                        app:chipStrokeColor="@color/text_chip_color"
+                        app:chipStrokeWidth="1dp" />
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/c10"
+                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginHorizontal="5dp"
+                        android:backgroundTint="@color/white"
+                        android:checkable="true"
+                        android:text="10 - 11 AM"
+                        android:textColor="@color/text_chip_color"
+                        app:chipStrokeColor="@color/text_chip_color"
+                        app:chipStrokeWidth="1dp" />
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/c11"
+                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginHorizontal="5dp"
+                        android:backgroundTint="@color/white"
+                        android:checkable="true"
+                        android:text="11 - 12 PM"
+                        android:textColor="@color/text_chip_color"
+                        app:chipStrokeColor="@color/text_chip_color"
+                        app:chipStrokeWidth="1dp" />
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/c12"
+                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginHorizontal="5dp"
+                        android:backgroundTint="@color/white"
+                        android:checkable="true"
+                        android:text="12 - 01 PM"
+                        android:textColor="@color/text_chip_color"
+                        app:chipStrokeColor="@color/text_chip_color"
+                        app:chipStrokeWidth="1dp" />
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/c13"
+                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginHorizontal="5dp"
+                        android:backgroundTint="@color/white"
+                        android:checkable="true"
+                        android:text="01 - 02 PM"
+                        android:textColor="@color/text_chip_color"
+                        app:chipStrokeColor="@color/text_chip_color"
+                        app:chipStrokeWidth="1dp" />
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/c14"
+                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginHorizontal="5dp"
+                        android:backgroundTint="@color/white"
+                        android:checkable="true"
+                        android:text="02 - 03 PM"
+                        android:textColor="@color/text_chip_color"
+                        app:chipStrokeColor="@color/text_chip_color"
+                        app:chipStrokeWidth="1dp" />
+                </GridLayout>
+            </HorizontalScrollView>
 
             <TextView
                 android:id="@+id/timings1"
@@ -206,70 +280,136 @@
                 android:textColor="#000000"
                 android:textSize="15sp"
                 app:layout_constraintStart_toStartOf="@+id/firm_timings"
-                app:layout_constraintTop_toBottomOf="@+id/fmor" />
+                app:layout_constraintTop_toBottomOf="@+id/hs_mor" />
 
-            <EditText
-                android:id="@+id/feve"
+            <HorizontalScrollView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="30dp"
-                android:layout_marginTop="20dp"
-                android:ems="5"
-                android:textSize="15sp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="@+id/timings1"
-                app:layout_constraintTop_toBottomOf="@id/timings1" />
-
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/bt_feve"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:backgroundTint="@color/orange"
-                android:elevation="5dp"
-                android:text="From"
-                android:textColor="#ffffff"
-                app:cornerRadius="10dp"
-                app:layout_constraintBottom_toBottomOf="@+id/feve"
-                app:layout_constraintEnd_toEndOf="@+id/feve"
-                app:layout_constraintStart_toStartOf="@+id/feve"
-                app:layout_constraintTop_toTopOf="@+id/feve" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="to"
-                android:textColor="#000000"
-                android:textSize="20sp"
-                app:layout_constraintBottom_toBottomOf="@+id/leve"
-                app:layout_constraintEnd_toStartOf="@+id/leve"
-                app:layout_constraintStart_toEndOf="@+id/feve"
-                app:layout_constraintTop_toTopOf="@+id/feve" />
-
-            <EditText
-                android:id="@+id/leve"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="50dp"
                 android:layout_marginTop="10dp"
-                android:ems="5"
-                android:textSize="15sp"
-                app:layout_constraintBottom_toBottomOf="@+id/feve"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/feve" />
+                android:layout_marginHorizontal="20dp"
+                android:id="@+id/hs_eve"
+                android:scrollbars="horizontal"
+                app:layout_constraintTop_toBottomOf="@+id/timings1"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent">
 
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/bt_leve"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:backgroundTint="@color/orange"
-                android:elevation="5dp"
-                android:text="TO"
-                android:textColor="#ffffff"
-                app:cornerRadius="10dp"
-                app:layout_constraintBottom_toBottomOf="@+id/leve"
-                app:layout_constraintEnd_toEndOf="@+id/leve"
-                app:layout_constraintStart_toStartOf="@+id/leve"
-                app:layout_constraintTop_toTopOf="@+id/leve" />
+                <GridLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:rowCount="3"
+                    android:columnCount="3">
+
+                    <com.google.android.material.chip.Chip
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/c15"
+                        android:checkable="true"
+                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                        android:text="03 - 04 PM"
+                        android:layout_marginHorizontal="5dp"
+                        android:textColor="@color/text_chip_color"
+                        app:chipStrokeColor="@color/text_chip_color"
+                        app:chipStrokeWidth="1dp"
+                        android:backgroundTint="@color/white"/>
+                    <com.google.android.material.chip.Chip
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/c16"
+                        android:checkable="true"
+                        android:layout_marginHorizontal="5dp"
+                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                        android:text="04 - 05 PM"
+                        android:textColor="@color/text_chip_color"
+                        app:chipStrokeColor="@color/text_chip_color"
+                        app:chipStrokeWidth="1dp"
+                        android:backgroundTint="@color/white"/>
+                    <com.google.android.material.chip.Chip
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/c17"
+                        android:checkable="true"
+                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                        android:text="05 - 06 PM"
+                        android:layout_marginHorizontal="5dp"
+                        android:textColor="@color/text_chip_color"
+                        app:chipStrokeColor="@color/text_chip_color"
+                        app:chipStrokeWidth="1dp"
+                        android:backgroundTint="@color/white"/>
+                    <com.google.android.material.chip.Chip
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/c18"
+                        android:checkable="true"
+                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                        android:text="06 - 07 PM"
+                        android:layout_marginHorizontal="5dp"
+                        android:textColor="@color/text_chip_color"
+                        app:chipStrokeColor="@color/text_chip_color"
+                        app:chipStrokeWidth="1dp"
+                        android:backgroundTint="@color/white"/>
+                    <com.google.android.material.chip.Chip
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/c19"
+                        android:checkable="true"
+                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                        android:text="07 - 08 PM"
+                        android:layout_marginHorizontal="5dp"
+                        android:textColor="@color/text_chip_color"
+                        app:chipStrokeColor="@color/text_chip_color"
+                        app:chipStrokeWidth="1dp"
+                        android:backgroundTint="@color/white"/>
+                    <com.google.android.material.chip.Chip
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/c20"
+                        android:checkable="true"
+                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                        android:text="08 - 09 PM"
+                        android:layout_marginHorizontal="5dp"
+                        android:textColor="@color/text_chip_color"
+                        app:chipStrokeColor="@color/text_chip_color"
+                        app:chipStrokeWidth="1dp"
+                        android:backgroundTint="@color/white"/>
+                    <com.google.android.material.chip.Chip
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/c21"
+                        android:checkable="true"
+                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                        android:text="09 - 10 PM"
+                        android:layout_marginHorizontal="5dp"
+                        android:textColor="@color/text_chip_color"
+                        app:chipStrokeColor="@color/text_chip_color"
+                        app:chipStrokeWidth="1dp"
+                        android:backgroundTint="@color/white"/>
+                    <com.google.android.material.chip.Chip
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/c22"
+                        android:checkable="true"
+                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                        android:text="10 - 11 PM"
+                        android:layout_marginHorizontal="5dp"
+                        android:textColor="@color/text_chip_color"
+                        app:chipStrokeColor="@color/text_chip_color"
+                        app:chipStrokeWidth="1dp"
+                        android:backgroundTint="@color/white"/>
+                    <com.google.android.material.chip.Chip
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/c23"
+                        android:checkable="true"
+                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                        android:text="11 - 06 AM"
+                        android:layout_marginHorizontal="5dp"
+                        android:textColor="@color/text_chip_color"
+                        app:chipStrokeColor="@color/text_chip_color"
+                        app:chipStrokeWidth="1dp"
+                        android:backgroundTint="@color/white"/>
+                </GridLayout>
+            </HorizontalScrollView>
+
 
             <TextView
                 android:id="@+id/firm_timings"
@@ -308,8 +448,8 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="30dp"
         android:backgroundTint="@color/orange"
-        android:paddingHorizontal="30dp"
-        android:paddingVertical="15dp"
+        android:paddingHorizontal="20dp"
+        android:paddingVertical="10dp"
         android:text="Submit"
         android:textColor="#ffffff"
         android:textSize="20dp"

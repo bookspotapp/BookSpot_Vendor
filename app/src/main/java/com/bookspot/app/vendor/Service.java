@@ -1,4 +1,5 @@
 package com.bookspot.app.vendor;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.GridLayoutManager;
@@ -13,12 +14,14 @@ import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.util.Base64;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.material.button.MaterialButton;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
@@ -30,15 +33,28 @@ public class Service extends AppCompatActivity {
 
     TextView submit;
     ImageView back;
+    RecyclerView recyclerView;
 
-    ArrayList salon_services = new ArrayList<>(Arrays.asList("Hair care", "Skin care", "Make-up combos", "Hands & feet", "Spa & Massages", "Shower & shampoo", "Kids friendly"));
-    ArrayList restraunt_services = new ArrayList<>(Arrays.asList("Breakfast/lunch/dinner", "Family dine-ins", "Take Away", "Indoor", "Rooftop", "Bar/lounge", "Self- service", "Happy hours", "Kids Friendly"));
-    ArrayList gym_services = new ArrayList<>(Arrays.asList("Equipments", "Yoga", "Zumba", "Aerobics", "Dance"));
+    ArrayList salon_services = new ArrayList<>(Arrays.asList("Hair Cut", "Hair Styling", "Hair Wash", "Hair Colour", "Beard", "Hair Cut + Beard", "Facial & Clean-up", "Bleach", "Eyebrow", "Waxing", "Threading",
+                                                            "Manicuure/Pedicure", "Nail Treatment", "Nail art", "Nail Extensions", "Head Massage", "Body Massage"));
+
+    ArrayList restraunt_services = new ArrayList<>(Arrays.asList("Breakfast/lunch/dinner", "Family dine-ins", "Take Away", "Indoor", "Rooftop", "Bar/lounge", "Self-service", "Happy hours", "Kids Friendly", "Chinese",
+                                                            "Italian", "Continental", "Indian", "Thai", "Mughlai", "Mexican"));
+
+    ArrayList gym_services = new ArrayList<>(Arrays.asList("Cricket", "Football", "Other"));
+
     ArrayList bank_services = new ArrayList<>(Arrays.asList("Talk to your executive", "Open account", "Transactions", "Deposits", "Other"));
+
     ArrayList retail_services = new ArrayList<>(Arrays.asList("Shop groceries", "Clothes", "General store"));
-    ArrayList diagnostic_centres = new ArrayList<>(Arrays.asList("Consultation", "Blood Test", "Urine Test", "Sugar Test", "Full Body Checkup", "X-Ray", "CT Scan", "MRI", "ECG"));
+
+    ArrayList diagnostic_centres = new ArrayList<>(Arrays.asList("Blood Test", "Urine Test", "Sugar Test", "X-Ray", "CT Scan", "MRI Scan", "HIV", "Sonography", "Full Body Checkup"));
+
     ArrayList service_centres = new ArrayList<>(Arrays.asList("Device Repair", "Vehicle Repair", "Car Wash"));
-    ArrayList clinics = new ArrayList<>(Arrays.asList("General Physician", "Paediatrician", "Bed Available", "Wound Suturing"));
+
+    ArrayList govt_offices = new ArrayList<>(Arrays.asList("Billing", "Registration", "Complaint"));
+
+    ArrayList doctors = new ArrayList<>(Arrays.asList( "Family Physician", "Vet", "Orthopaedic", "Dentist", "Gynaecologist", "Darmetologist", "Cardiologist", "ENT", "Eye-Specialist", "Dietitian & Nutritionalist",
+                                                    "Neurologist", "Psychatrist", "Physiotherapist", "gastroenterologist", "Allergists/Immunologist"));
     ArrayList<String> list;
     String services = new String();
 
@@ -80,7 +96,7 @@ public class Service extends AppCompatActivity {
             }
         });
 
-        RecyclerView recyclerView = (RecyclerView) findViewById(R.id.services_rv);
+        recyclerView = (RecyclerView) findViewById(R.id.services_rv);
         LinearLayoutManager gridLayoutManager = new LinearLayoutManager(getApplicationContext());
         gridLayoutManager.setOrientation(LinearLayoutManager.VERTICAL); // set Horizontal Orientation
         recyclerView.setLayoutManager(gridLayoutManager);
@@ -92,16 +108,16 @@ public class Service extends AppCompatActivity {
                 list = salon_services;
                 break;
 
-            case "Gyms":
+            case "Gyms & Turfs":
                 list = gym_services;
                 break;
 
-            case "Restraunts":
+            case "Restaurants":
                 list = restraunt_services;
                 break;
 
-            case "Clinics":
-                list = clinics;
+            case "Doctors":
+                list = doctors;
                 break;
 
             case "Diagnostic Centres":
@@ -119,20 +135,25 @@ public class Service extends AppCompatActivity {
             case  "Banks":
                 list = bank_services;
                 break;
+
+            case  "Government Offices":
+                list = govt_offices;
+                break;
         }
 
-        Adapter adapter = new Adapter(list);
+        Adapter adapter = new Adapter(list, services);
         recyclerView.setAdapter(adapter);
     }
 
     public class Adapter extends RecyclerView.Adapter<Adapter.ProductViewHolder> {
 
-        private String rv;
+        private String service;
         private List<String> list;
 
 
-        public Adapter(List<String> list) {
+        public Adapter(List<String> list, String service) {
             this.list = list;
+            this.service = service;
         }
 
         @Override
@@ -145,19 +166,26 @@ public class Service extends AppCompatActivity {
         }
 
         @Override
-        public void onBindViewHolder(final ProductViewHolder holder, int position) {
+        public void onBindViewHolder(final ProductViewHolder holder, final int position) {
             //getting the product of the specified position
             final String product = list.get(position);
 
-            holder.right.setVisibility(View.INVISIBLE);
             holder.name.setText(product);
+            if(service.contains(product)){
+                holder.right.setVisibility(View.VISIBLE);
+                holder.select.setVisibility(View.INVISIBLE);
+            }else{
+                holder.select.setVisibility(View.VISIBLE);
+                holder.right.setVisibility(View.INVISIBLE);
+            }
             holder.select.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     services += product + ";";
-                    holder.select.setVisibility(View.INVISIBLE);
-                    holder.cardView.setVisibility(View.INVISIBLE);
-                    holder.right.setVisibility(View.VISIBLE);
+                    System.out.println("child text = "+ product + " services = " + services);
+                    Adapter adapter1 = new Adapter(list, services);
+                    recyclerView.setAdapter(adapter1);
+                    recyclerView.smoothScrollToPosition(position);
                 }
             });
         }
@@ -171,9 +199,9 @@ public class Service extends AppCompatActivity {
 
          class ProductViewHolder extends RecyclerView.ViewHolder {
 
-            TextView name , select ;
+            TextView name ;
+            MaterialButton select ;
             ImageView right;
-            CardView cardView;
 
 
             public ProductViewHolder(View itemView) {
@@ -181,7 +209,6 @@ public class Service extends AppCompatActivity {
                 name = itemView.findViewById(R.id.name);
                 select = itemView.findViewById(R.id.select_text);
                 right = itemView.findViewById(R.id.right);
-                cardView = itemView.findViewById(R.id.select_cv);
             }
         }
     }

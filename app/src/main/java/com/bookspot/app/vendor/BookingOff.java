@@ -104,9 +104,6 @@ public class BookingOff extends Fragment {
                                     + "/" + SplashScreen.vendor.getUID());
                     statusRef.child("status").setValue(1);
 
-                    tv9.setVisibility(View.INVISIBLE);
-                    tv10.setVisibility(View.INVISIBLE);
-                    switch_on.setVisibility(View.INVISIBLE);
                     Fragment fragment = new BookingOn();
                     getFragmentManager().beginTransaction()
                             .setCustomAnimations(
@@ -114,7 +111,6 @@ public class BookingOff extends Fragment {
                                     R.anim.slide_down
                             )
                             .replace(R.id.booking, fragment)
-                            .addToBackStack("off")
                             .commit();
                 }
 

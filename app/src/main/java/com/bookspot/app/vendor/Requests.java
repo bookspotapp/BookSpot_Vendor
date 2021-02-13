@@ -2,11 +2,13 @@ package com.bookspot.app.vendor;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
@@ -15,6 +17,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -32,32 +35,51 @@ public class Requests extends AppCompatActivity {
 
     List<Container_Class.NewBooking> list;
     RecyclerView recyclerView;
-    static int tkn_no ;
-    String reqs;
+    String r;
     String req[];
+    ProgressBar progressBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_requests);
 
-        if(BookingOn.notificationManager != null)
-            BookingOn.notificationManager.cancel(1);
-
-        reqs = BookingOn.rq;
-        req = reqs.split(";");
-
+        progressBar = findViewById(R.id.progressBar);
         recyclerView = (RecyclerView) findViewById(R.id.req_rv);
-        recyclerView.setLayoutManager(new LinearLayoutManager(Requests.this));
-        recyclerView.setHasFixedSize(true);
 
-        for(String r : req) {
-            Container_Class.NewBooking newBooking = convertStringToNB(r);
-            list.add(newBooking);
-        }
+        recyclerView.setVisibility(View.INVISIBLE);
+        SharedPreferences sharedPreferences = Requests.this.getSharedPreferences("user", MODE_PRIVATE);
+        SplashScreen.vendor.setUID(sharedPreferences.getString("UID", ""));
+        System.out.println("inside requests uid = " + SplashScreen.vendor.getUID());
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("vendors/"+ SplashScreen.vendor.getUID());
+        ref.child("req").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                list = new ArrayList<>();
+                for(DataSnapshot ds : snapshot.getChildren()){
+                    r = ds.getValue(String.class);
+                    if(r != null && !r.isEmpty()){
+                        Container_Class.NewBooking booking = convertStringToNB(r);
+                        booking.setKey(ds.getKey());
+                        list.add(booking);
+                    }
+                }
+                recyclerView.setLayoutManager(new LinearLayoutManager(Requests.this));
+                recyclerView.setHasFixedSize(true);
+                if(list != null) {
+                    Adapter adapter = new Adapter(list);
+                    recyclerView.setAdapter(adapter);
+                    recyclerView.setVisibility(View.VISIBLE);
+                    progressBar.setVisibility(View.INVISIBLE);
+                }else
+                    Toast.makeText(Requests.this, "Sorry! There is no New Booking", Toast.LENGTH_SHORT);
+            }
 
-        Adapter adapter = new Adapter(list);
-        recyclerView.setAdapter(adapter);
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
 
     }
 
@@ -83,44 +105,86 @@ public class Requests extends AppCompatActivity {
             //getting the product of the specified position
             final Container_Class.NewBooking newBooking = list.get(position);
 
-            holder.tkn.setText("Token No. "+ newBooking.getTkn());
+            holder.date.setText("Date :- "+ newBooking.getbDate());
+            holder.time.setText("Time Slot :- "+ newBooking.getbTime());
 
             holder.decline.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    reqs.replace(req[position] + ";", " ");
+                    System.out.println("inside decline uid = " +SplashScreen.vendor.getUID() + "newBooking key = " + newBooking.getKey());
+
                     DatabaseReference rq = FirebaseDatabase.getInstance().getReference("vendors/"+ SplashScreen.vendor.getUID());
-                    rq.child("req").setValue(null);
+                    rq.child("req").child(newBooking.getKey()).setValue(null);
 
                     DatabaseReference cust = FirebaseDatabase.getInstance().getReference("customers/" +newBooking.getUID());
                     cust.child("services").child(SplashScreen.vendor.getUID()).child("st").setValue(3);
-                    finish();
+
+                    if(list.size() == 1) {
+                        startActivity(new Intent(Requests.this, MainActivity.class));
+                        finish();
+                    }else{
+                        list.remove(position);
+                        Adapter adapter = new Adapter(list);
+                        recyclerView.setAdapter(adapter);
+                    }
                 }
             });
 
             holder.accept.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    System.out.println("inside decline uid = " +SplashScreen.vendor.getUID() + "newBooking key = " + newBooking.getKey());
+                    int index ;
+                    String time[] = newBooking.getbTime().split(" ");
+                    if(time[3].equals("PM"))
+                        index = 12;
+                    else
+                        index = 0;
+                    index += Integer.parseInt(time[0]);
 
-                    DatabaseReference nb = FirebaseDatabase.getInstance().getReference("orders/" + SplashScreen.vendor.getUID());
-                    nb.child("order").child(newBooking.getUID()).setValue(newBooking);
-                    nb.child("tkn").setValue(newBooking.getTkn());
 
-                    Container_Class.CustomerSideOrder order = new Container_Class.CustomerSideOrder(
-                            SplashScreen.vendor.getFname(),
-                            newBooking.getsType(),
-                            newBooking.getbDate(),
-                            newBooking.getbTime(),
-                            SplashScreen.vendor.getUID()
-                    );
+                    DatabaseReference referenceOfSch = FirebaseDatabase.getInstance().getReference("orders/" + SplashScreen.vendor.getUID());
+                    referenceOfSch.child("sch").child(newBooking.getbDate()).child(String.valueOf(index)).addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+                            int token = 0;
+                            if(snapshot.getValue(Integer.class) != null)
+                                token = snapshot.getValue(Integer.class);
+                            snapshot.getRef().setValue(token + 1);
+                            newBooking.setTkn(token+1);
 
-                    DatabaseReference cust = FirebaseDatabase.getInstance().getReference("customers/" + newBooking.getUID());
-                    cust.child("services").child(SplashScreen.vendor.getUID()).setValue(order);
-                    cust.child("services").child(SplashScreen.vendor.getUID()).child("st").setValue(2);
+                            Container_Class.CustomerSideOrder order = new Container_Class.CustomerSideOrder(
+                                    SplashScreen.vendor.getFname(),
+                                    newBooking.getsType(),
+                                    newBooking.getbDate(),
+                                    newBooking.getbTime(),
+                                    SplashScreen.vendor.getUID()
+                            );
 
-                    DatabaseReference rq = FirebaseDatabase.getInstance().getReference("vendors/"+ SplashScreen.vendor.getUID());
-                    rq.child("req").setValue(null);
-                    finish();
+                            DatabaseReference nb = FirebaseDatabase.getInstance().getReference("orders/" + SplashScreen.vendor.getUID());
+                            nb.child("order").child(newBooking.getUID()).setValue(newBooking);
+
+                            DatabaseReference cust = FirebaseDatabase.getInstance().getReference("customers/" + newBooking.getUID());
+                            cust.child("services").child(SplashScreen.vendor.getUID()).child("st").setValue(2);
+
+                            DatabaseReference rq = FirebaseDatabase.getInstance().getReference("vendors/"+ SplashScreen.vendor.getUID());
+                            rq.child("req").child(newBooking.getKey()).setValue(null);
+                            rq.child("his").push().setValue(r);
+                            if(list.size() == 1) {
+                                startActivity(new Intent(Requests.this, MainActivity.class));
+                                finish();
+                            }else{
+                                list.remove(position);
+                                Adapter adapter = new Adapter(list);
+                                recyclerView.setAdapter(adapter);
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError error) {
+
+                        }
+                    });
                 }
             });
 
@@ -134,7 +198,7 @@ public class Requests extends AppCompatActivity {
 
         class ProductViewHolder extends RecyclerView.ViewHolder {
 
-            TextView tkn;
+            TextView date, time;
             MaterialButton accept, decline;
 
             public ProductViewHolder(View itemView) {
@@ -142,7 +206,8 @@ public class Requests extends AppCompatActivity {
 
                 accept = itemView.findViewById(R.id.accept);
                 decline = itemView.findViewById(R.id.decline);
-                tkn = itemView.findViewById(R.id.token_no);
+                date = itemView.findViewById(R.id.date);
+                time = itemView.findViewById(R.id.time);
             }
         }
     }
@@ -153,7 +218,6 @@ public class Requests extends AppCompatActivity {
 
         return new Container_Class.NewBooking(
                 Integer.parseInt(members[7]),
-                Integer.parseInt(members[8]),
                 members[2],
                 members[3],
                 members[4],

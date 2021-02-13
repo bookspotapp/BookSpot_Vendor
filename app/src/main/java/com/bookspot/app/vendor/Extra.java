@@ -85,7 +85,10 @@ public class Extra extends AppCompatActivity {
                 System.out.println("\n Failure! doesn't have image of id = "+ det.getUid());
                 Toast.makeText(Extra.this, "Failure! doesn't have image", Toast.LENGTH_SHORT).show();
             }
-            detRef.child(vendor.getCat()).child(det.getUid()).setValue(det);
+            if(vendor.getCat() == null)
+                System.out.println("\n Failure! doesn't have cat = "+ det.getUid());
+            else
+                detRef.child(vendor.getCat()).child(det.getUid()).setValue(det);
         }
     }
 

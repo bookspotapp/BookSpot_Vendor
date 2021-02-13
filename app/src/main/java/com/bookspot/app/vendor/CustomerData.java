@@ -96,10 +96,13 @@ public class CustomerData extends AppCompatActivity {
             //getting the product of the specified position
             final Container_Class.NewBooking newBooking = list.get(position);
 
-            holder.tkn.setText(  String.valueOf(newBooking.getTkn()));
+            String tkn_value = newBooking.getbTime().split(" ")[0] + newBooking.getTkn();
+            System.out.println("tkn_value = " + tkn_value);
+            holder.tkn.setText(tkn_value);
             holder.type.setText( newBooking.getsType());
             holder.time.setText( newBooking.getbTime());
             holder.sbk.setText( String.valueOf(newBooking.getSbk() ));
+            holder.date.setText( newBooking.getbDate());
         }
 
         @Override
@@ -110,7 +113,7 @@ public class CustomerData extends AppCompatActivity {
 
         class ProductViewHolder extends RecyclerView.ViewHolder {
 
-            TextView tkn, type, time, sbk;
+            TextView tkn, type, time, sbk, date;
 
             public ProductViewHolder(View itemView) {
                 super(itemView);
@@ -118,6 +121,7 @@ public class CustomerData extends AppCompatActivity {
                 tkn = itemView.findViewById(R.id.tkn_no);
                 type = itemView.findViewById(R.id.service_type);
                 time = itemView.findViewById(R.id.booking_time);
+                date = itemView.findViewById(R.id.booking_date);
                 sbk = itemView.findViewById(R.id.seats_booked);
             }
         }

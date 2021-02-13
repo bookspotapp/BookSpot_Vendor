@@ -1,14 +1,15 @@
 package com.bookspot.app.vendor;
 
+import java.util.Comparator;
+
 public class Container_Class {
 
     public static class NewBooking{
         private int tkn, sbk;
-        private String bTime, bDate, sType, name, cno, UID;
+        private String bTime, bDate, sType, name, cno, UID, key;
         private boolean com;
 
-        public NewBooking(int tkn, int sbk, String bTime, String bDate, String sType, String name, String cno, String UID, boolean com) {
-            this.tkn = tkn;
+        public NewBooking( int sbk, String bTime, String bDate, String sType, String name, String cno, String UID, boolean com) {
             this.sbk = sbk;
             this.bTime = bTime;
             this.sType = sType;
@@ -20,6 +21,22 @@ public class Container_Class {
         }
 
         public NewBooking() {
+        }
+
+        public String getKey() {
+            return key;
+        }
+
+        public void setKey(String key) {
+            this.key = key;
+        }
+
+        public boolean isCom() {
+            return com;
+        }
+
+        public void setCom(boolean com) {
+            this.com = com;
         }
 
         public String getbDate() {
@@ -87,14 +104,22 @@ public class Container_Class {
         }
     }
 
+    public static class SortNewBookingbytime implements Comparator<NewBooking> {
+
+        @Override
+        public int compare(NewBooking o1, NewBooking o2) {
+            return o1.getbTime().compareTo(o2.getbTime());
+        }
+    }
+
     public static class Vendor{
-        private String cno, fname, oname, add, email, website, addno, cat, services, image, total_tokens, sdate, stime, UID, rat, ltiming;
+        private String cno, fname, oname, add, email, website, addno, cat, services, image, total_tokens, sdate, stime, UID, rat, ltiming, op;
         private double lat, lng;
 
         public Vendor(){}
 
         public Vendor(String cno, String fname, String oname, String add, String email, String website, String cat,
-                      String services, String image, String total_tokens, String sdate, String stime, String addno , String UID , double lat, double lng) {
+                      String services, String image, String total_tokens, String sdate, String stime, String addno , String UID , double lat, double lng, String op) {
             this.cno = cno;
             this.fname = fname;
             this.oname = oname;
@@ -111,12 +136,21 @@ public class Container_Class {
             this.UID = UID;
             this.lat = lat;
             this.lng = lng;
+            this.op = op;
         }
 
         public Vendor(String cno, String oname, String UID) {
             this.cno = cno;
             this.oname = oname;
             this.UID = UID;
+        }
+
+        public String getOp() {
+            return op;
+        }
+
+        public void setOp(String op) {
+            this.op = op;
         }
 
         public String getLtiming() {

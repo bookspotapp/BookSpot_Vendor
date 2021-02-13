@@ -7,68 +7,72 @@
     android:backgroundTint="#FDF5F2"
     tools:context=".BookingOn">
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/orders_rv"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layout_constraintTop_toTopOf="parent" />
 
-    <androidx.cardview.widget.CardView
-        android:layout_width="match_parent"
-        android:layout_height="200dp"
-        app:cardBackgroundColor="@color/orange"
-        app:cardCornerRadius="20dp"
-        android:id="@+id/cv1"
-        app:layout_constraintTop_toTopOf="parent">
         <TextView
-            android:id="@+id/tv1"
+            android:id="@+id/textView11"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
+            android:text="Upcoming Bookings"
+            android:textColor="#000000"
+            android:textSize="30sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/cv1"
+            app:layout_constraintVertical_bias="0.3" />
+
+        <TextView
+            android:id="@+id/textView10"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="No Booking"
+            android:layout_margin="20dp"
+            android:text="Turn Off Services :"
+            android:textColor="#000000"
+            android:textSize="20sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textView11" />
+
+        <androidx.appcompat.widget.SwitchCompat
+            android:id="@+id/turn_off_services"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="20dp"
+            android:checked="true"
             android:textColor="#ffffff"
-            android:textSize="50dp"
-            android:textStyle="bold"
-            android:layout_gravity="center"/>
-    </androidx.cardview.widget.CardView>
+            android:thumb="@drawable/custom_thumb"
+            app:layout_constraintBottom_toBottomOf="@+id/textView10"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/textView10"
+            app:layout_constraintVertical_bias="0.523"
+            app:showText="true"
+            app:track="@drawable/custom_track" />
 
-    <TextView
-        android:id="@+id/textView11"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="20dp"
-        android:text="Upcoming Bookings"
-        android:textColor="#000000"
-        android:textSize="30sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/cv1"
-        app:layout_constraintVertical_bias="0.3" />
+        <androidx.cardview.widget.CardView
+            android:id="@+id/cv1"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            app:cardBackgroundColor="@color/orange"
+            app:cardCornerRadius="20dp"
+            app:layout_constraintTop_toTopOf="parent">
 
-    <TextView
-        android:id="@+id/textView10"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="20dp"
-        android:text="Turn Off Services :"
-        android:textColor="#000000"
-        android:textSize="20sp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView11" />
+            <TextView
+                android:id="@+id/tv1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="No Booking"
+                android:textColor="#ffffff"
+                android:textSize="50dp"
+                android:textStyle="bold" />
+        </androidx.cardview.widget.CardView>
 
-    <androidx.appcompat.widget.SwitchCompat
-        android:id="@+id/turn_off_services"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="20dp"
-        android:textColor="#ffffff"
-        android:checked="true"
-        app:layout_constraintBottom_toBottomOf="@+id/textView10"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/textView10"
-        app:layout_constraintVertical_bias="0.523"
-        app:showText="true"
-        android:thumb="@drawable/custom_thumb"
-        app:track="@drawable/custom_track" />
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/orders_rv"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toTopOf="parent" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>
+

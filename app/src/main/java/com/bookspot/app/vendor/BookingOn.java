@@ -1,17 +1,25 @@
 package com.bookspot.app.vendor;
 
+import android.app.AlarmManager;
+import android.app.Notification;
 import android.app.PendingIntent;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.widget.SwitchCompat;
 import androidx.cardview.widget.CardView;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Lifecycle;
+import androidx.lifecycle.LifecycleObserver;
+import androidx.lifecycle.OnLifecycleEvent;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -33,18 +41,19 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
 
+import static android.view.View.inflate;
 import static androidx.recyclerview.widget.RecyclerView.HORIZONTAL;
 import static com.bookspot.app.vendor.SplashScreen.CHANNEL_ID;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link BookingOn#newInstance} factory method to
- * create an instance of this fragment.
- */
-public class BookingOn extends Fragment {
+public class BookingOn extends Fragment implements LifecycleObserver {
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -63,40 +72,11 @@ public class BookingOn extends Fragment {
     CardView cv1;
     LinearLayoutManager layoutManager;
     public  static NotificationManagerCompat notificationManager;
-    public static String rq;
-    boolean s, v, n;
-
 
     public BookingOn() {
         // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment BookingOn.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static BookingOn newInstance(String param1, String param2) {
-        BookingOn fragment = new BookingOn();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
-    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -105,28 +85,41 @@ public class BookingOn extends Fragment {
         view = inflater.inflate(R.layout.fragment_booking_on, container, false);
 
         final SharedPreferences sharedPreferences = getActivity().getSharedPreferences("user", Context.MODE_PRIVATE);
+
+
+        /*
         s = sharedPreferences.getBoolean("sound", false);
         v = sharedPreferences.getBoolean("vibrate", false);
         n = sharedPreferences.getBoolean("next", false);
+
+        System.out.print("v = " + String.valueOf(v));
+        System.out.print("s = " + String.valueOf(s));
+        System.out.print("n = " + String.valueOf(n));
 
         Intent intent = new Intent(getContext(), Requests.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         PendingIntent pendingIntent = PendingIntent.getActivity(getActivity(), 0, intent, 0);
 
-        final NotificationCompat.Builder builder = new NotificationCompat.Builder(getActivity(), CHANNEL_ID)
-                .setSmallIcon(R.drawable.logo)
+
+        final NotificationCompat.Builder builder = new NotificationCompat.Builder(getActivity().getApplicationContext(), CHANNEL_ID)
+                .setWhen(System.currentTimeMillis());
+
+        builder.setSmallIcon(R.drawable.logo)
                 .setContentTitle("New Booking Alert!")
                 .setContentText("You have received a new booking....")
-                .setPriority(NotificationCompat.PRIORITY_DEFAULT)
                 // Set the intent that will fire when the user taps the notification
                 .setContentIntent(pendingIntent)
                 .setAutoCancel(true);
 
-        if(!s)
+        if(!s){
             builder.setNotificationSilent();
-        if(v)
-            builder.setVibrate(new long[] { 1000, 500, 1000, 500, 1000 });
+        }
 
+        if(v) {
+            System.out.println("v is true");
+            builder.setVibrate(new long[]{1000, 1000, 1000, 1000, 1000});
+        }
+        */
 
 
         // switch on to off
@@ -142,24 +135,14 @@ public class BookingOn extends Fragment {
                                     + "/" + SplashScreen.vendor.getUID());
                     statusRef.child("status").setValue(0);
 
-                    DatabaseReference ref = FirebaseDatabase.getInstance().getReference("orders/"+ SplashScreen.vendor.getUID() );
-                    ref.child("order").addListenerForSingleValueEvent(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(@NonNull DataSnapshot snapshot) {
-
-                                getActivity().onBackPressed();
-                                BookingOff.tv9.setVisibility(View.VISIBLE);
-                                BookingOff.tv10.setVisibility(View.VISIBLE);
-                                BookingOff.switch_on.setVisibility(View.VISIBLE);
-                                BookingOff.switch_on.setChecked(false);
-
-                        }
-
-                        @Override
-                        public void onCancelled(@NonNull DatabaseError error) {
-
-                        }
-                    });
+                    Fragment fragment = new BookingOff();
+                    getFragmentManager().beginTransaction()
+                            .setCustomAnimations(
+                                    R.anim.slide_up,  // enter
+                                    R.anim.slide_down
+                            )
+                            .replace(R.id.booking, fragment)
+                            .commit();
                 }
             }
         });
@@ -171,15 +154,9 @@ public class BookingOn extends Fragment {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 if(snapshot != null) {
-                    String reqs = snapshot.getValue(String.class);
-                    if(reqs != null && reqs.length() > 6) {
-                        if(n) {
-                            notificationManager = NotificationManagerCompat.from(getActivity());
-                            int notificationId = 1;
-                            notificationManager.notify(notificationId, builder.build());
-                        }
-                         rq = reqs;
+                    if(snapshot.hasChildren()) { // checking whether req branch has children or not
                         Intent intent = new Intent(getActivity(), Requests.class);
+                        intent.putExtra("uid", SplashScreen.vendor.getUID());
                         startActivity(intent);
                     }
                 }
@@ -190,6 +167,7 @@ public class BookingOn extends Fragment {
 
             }
         });
+
 
         recyclerView = (RecyclerView) view.findViewById(R.id.orders_rv);
         layoutManager = new LinearLayoutManager(getActivity());
@@ -209,12 +187,19 @@ public class BookingOn extends Fragment {
                 if(snapshot != null) {
                     list = new ArrayList<>();
                     for (DataSnapshot ds : snapshot.getChildren()) {
-                        list.add(ds.getValue(Container_Class.NewBooking.class));
+                        NewBooking newBooking = ds.getValue(Container_Class.NewBooking.class);
+
+                        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+                        String formattedDate = df.format(Calendar.getInstance().getTime());
+
+                        if(newBooking.getbDate().equals(formattedDate))
+                            list.add(newBooking);
                     }
                     if(list.size() > 0) {
                         recyclerView.setVisibility(View.VISIBLE);
                         tv1.setVisibility(View.INVISIBLE);
                         cv1.setVisibility(View.INVISIBLE);
+                        Collections.sort(list, new SortNewBookingbytime());
                         Adapter adapter = new Adapter(list);
                         recyclerView.setAdapter(adapter);
                     }
@@ -256,9 +241,15 @@ public class BookingOn extends Fragment {
             //getting the product of the specified position
             final Container_Class.NewBooking newBooking = list.get(position);
 
-            final DatabaseReference ref = FirebaseDatabase.getInstance().getReference("customers/" + newBooking.getUID());
+            final DatabaseReference ref = FirebaseDatabase.getInstance().getReference("customers/" + newBooking.getUID() +"/services");
             final DatabaseReference order = FirebaseDatabase.getInstance().getReference("orders/" + SplashScreen.vendor.getUID()+ "/order");
-            holder.tkn.setText("Token No. :- " + newBooking.getTkn());
+            final DatabaseReference tkn = FirebaseDatabase.getInstance().getReference("orders/" + SplashScreen.vendor.getUID());
+
+            String tkn_value = newBooking.getbTime().split(" ")[0] + newBooking.getTkn();
+            System.out.println("tkn_value = " + tkn_value);
+
+            holder.tkn.setText("Token No. :- " + tkn_value);
+            holder.cdt.setText("Time Slot :- "+ newBooking.getbTime());
             holder.cname.setText("Customer Name :- " + newBooking.getName());
             holder.cno.setText("Customer No. :- "+ newBooking.getCno());
             holder.next.setOnClickListener(new View.OnClickListener() {
@@ -270,8 +261,18 @@ public class BookingOn extends Fragment {
             holder.done.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    int index ;
+                    String s[] = newBooking.getbTime().split(" ");
+                    if(s[3].equals("PM"))
+                        index = 12;
+                    else
+                        index = 0;
+                    index += Integer.parseInt(s[0]);
+
+                    String tkn_value = index + "-" + newBooking.getTkn();
                     list.remove(position);
-                    ref.child(newBooking.getsType()).setValue("done");
+                    ref.child(SplashScreen.vendor.getUID()).child("st").setValue(4);
+                    tkn.child("tkn_d").setValue(tkn_value);
                     order.child(newBooking.getUID()).setValue(null);
                     recyclerView.setAdapter(new Adapter(list));
                     if(list.size() == 1) {
@@ -285,8 +286,18 @@ public class BookingOn extends Fragment {
             holder.cancel.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    int index ;
+                    String s[] = newBooking.getbTime().split(" ");
+                    if(s[3].equals("PM"))
+                        index = 12;
+                    else
+                        index = 0;
+                    index += Integer.parseInt(s[0]);
+
+                    String tkn_value = index + "-" + newBooking.getTkn();
                     list.remove(position);
-                    ref.child(newBooking.getsType()).setValue("declined");
+                    ref.child(SplashScreen.vendor.getUID()).child("st").setValue(3);
+                    tkn.child("tkn_d").setValue(tkn_value);
                     order.child(newBooking.getUID()).setValue(null);
                     recyclerView.setAdapter(new Adapter(list));
                     if(list.size() == 1) {
@@ -307,13 +318,14 @@ public class BookingOn extends Fragment {
 
         class ProductViewHolder extends RecyclerView.ViewHolder {
 
-            TextView tkn, cname, cno;
+            TextView tkn, cname, cno, cdt;
             MaterialButton done, cancel, next;
 
             public ProductViewHolder(View itemView) {
                 super(itemView);
 
                 tkn = itemView.findViewById(R.id.token_no);
+                cdt = itemView.findViewById(R.id.token_date);
                 cname = itemView.findViewById(R.id.customer_name);
                 cno = itemView.findViewById(R.id.contact_no);
                 done = itemView.findViewById(R.id.done);

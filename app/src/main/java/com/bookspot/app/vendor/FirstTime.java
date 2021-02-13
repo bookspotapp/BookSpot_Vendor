@@ -43,8 +43,10 @@ import com.bookspot.app.vendor.SplashScreen;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.button.MaterialButton;
+import com.google.android.material.chip.Chip;
 import com.google.android.material.slider.LabelFormatter;
 import com.google.android.material.slider.RangeSlider;
+import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -57,17 +59,22 @@ import com.google.firebase.storage.UploadTask;
 import java.io.ByteArrayOutputStream;
 import java.io.FileDescriptor;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
 
 public class FirstTime extends AppCompatActivity implements View.OnClickListener, LocationListener {
 
     TextView f_name;
-    EditText date_picker, t_token, fmor, lmor, feve, leve;
-    MaterialButton pick_date, submit, bt_fmor, bt_lmor, bt_feve, bt_leve;
-    String date, activity, img, total_token;
+    EditText date_picker;
+    MaterialButton pick_date, submit;
+    String date, activity, img, total_token, timing = "";
+    TextInputEditText tkn;
     ImageView add_image;
     Bitmap final_img;
+
+    List<Chip> mor_chip, eve_chip;
+
     int GET_IMAGE = 786;
     int REQUEST_PERMISSION_LOCATION = 234;
     double lat, lng;
@@ -78,13 +85,45 @@ public class FirstTime extends AppCompatActivity implements View.OnClickListener
         setContentView(R.layout.activity_first_time);
 
         initializeit();
+        setOnClickListenersforChips();
+    }
 
-
+    private void setOnClickListenersforChips() {
+        for(Chip chip : mor_chip){
+            chip.setOnClickListener(this);
+        }
+        for(Chip chip : eve_chip){
+            chip.setOnClickListener(this);
+        }
     }
 
     private void initializeit() {
+        mor_chip = Arrays.asList(
+                (Chip) findViewById(R.id.c6),
+                (Chip) findViewById(R.id.c7),
+                (Chip) findViewById(R.id.c8),
+                (Chip) findViewById(R.id.c9),
+                (Chip) findViewById(R.id.c10),
+                (Chip) findViewById(R.id.c11),
+                (Chip) findViewById(R.id.c12),
+                (Chip) findViewById(R.id.c13),
+                (Chip) findViewById(R.id.c14)
+        );
+
+        eve_chip = Arrays.asList(
+                (Chip) findViewById(R.id.c15),
+                (Chip) findViewById(R.id.c16),
+                (Chip) findViewById(R.id.c17),
+                (Chip) findViewById(R.id.c18),
+                (Chip) findViewById(R.id.c19),
+                (Chip) findViewById(R.id.c20),
+                (Chip) findViewById(R.id.c21),
+                (Chip) findViewById(R.id.c22),
+                (Chip) findViewById(R.id.c23)
+        );
         activity = getIntent().getStringExtra("activity");
         if (activity != null && activity.equals("verification")) {
+
             DatabaseReference reference = FirebaseDatabase.getInstance().getReference("vendors/" + SplashScreen.vendor.getUID());
             reference.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
@@ -113,15 +152,7 @@ public class FirstTime extends AppCompatActivity implements View.OnClickListener
 
         submit = (MaterialButton) findViewById(R.id.submit);
         date_picker = (EditText) findViewById(R.id.day);
-        t_token = (EditText) findViewById(R.id.tokens);
-        fmor = (EditText) findViewById(R.id.fmor);
-        lmor = (EditText) findViewById(R.id.lmor);
-        feve = (EditText) findViewById(R.id.feve);
-        leve = (EditText) findViewById(R.id.leve);
-        bt_feve = (MaterialButton) findViewById(R.id.bt_feve);
-        bt_fmor = (MaterialButton) findViewById(R.id.bt_fmor);
-        bt_leve = (MaterialButton) findViewById(R.id.bt_leve);
-        bt_lmor = (MaterialButton) findViewById(R.id.bt_lmor);
+        tkn = (TextInputEditText) findViewById(R.id.tkn);
         pick_date = (MaterialButton) findViewById(R.id.pick_date);
         add_image = (ImageView) findViewById(R.id.add_img);
 
@@ -129,29 +160,17 @@ public class FirstTime extends AppCompatActivity implements View.OnClickListener
         f_name.setText("Welcome " + SplashScreen.vendor.getFname());
 
         date_picker.setVisibility(View.INVISIBLE);
-        feve.setVisibility(View.INVISIBLE);
-        fmor.setVisibility(View.INVISIBLE);
-        leve.setVisibility(View.INVISIBLE);
-        lmor.setVisibility(View.INVISIBLE);
 
-        bt_leve.setOnClickListener(this);
-        bt_fmor.setOnClickListener(this);
-        bt_feve.setOnClickListener(this);
-        bt_lmor.setOnClickListener(this);
-        submit.setOnClickListener(this);
-        pick_date.setOnClickListener(this);
-        add_image.setOnClickListener(this);
+        submit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                checkPermission(Manifest.permission.ACCESS_FINE_LOCATION, REQUEST_PERMISSION_LOCATION);
+            }
+        });
 
-    }
-
-    @Override
-    public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.add_img:
-                checkPermission(Manifest.permission.READ_EXTERNAL_STORAGE, GET_IMAGE);
-                break;
-
-            case R.id.pick_date:
+        pick_date.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
                 System.out.println("pick_date clicked");
 
                 DatePickerDialog picker;
@@ -160,7 +179,7 @@ public class FirstTime extends AppCompatActivity implements View.OnClickListener
                 int month = cldr.get(Calendar.MONTH);
                 int year = cldr.get(Calendar.YEAR);
                 // date picker dialog
-                picker = new DatePickerDialog(this,
+                picker = new DatePickerDialog(FirstTime.this,
                         new DatePickerDialog.OnDateSetListener() {
                             @Override
                             public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
@@ -173,95 +192,39 @@ public class FirstTime extends AppCompatActivity implements View.OnClickListener
                 picker.show();
                 picker.getButton(DatePickerDialog.BUTTON_NEGATIVE).setTextColor(ContextCompat.getColor(FirstTime.this, R.color.orange));
                 picker.getButton(DatePickerDialog.BUTTON_POSITIVE).setTextColor(ContextCompat.getColor(FirstTime.this, R.color.orange));
-                break;
+            }
+        });
 
-            case R.id.bt_feve:
-                Calendar mcurrentTime = Calendar.getInstance();
-                int hour = mcurrentTime.get(Calendar.HOUR_OF_DAY);
-                int minute = mcurrentTime.get(Calendar.MINUTE);
-                TimePickerDialog mTimePicker;
-                mTimePicker = new TimePickerDialog(FirstTime.this, R.style.abirStyle, new TimePickerDialog.OnTimeSetListener() {
-                    @Override
-                    public void onTimeSet(TimePicker timePicker, int selectedHour, int selectedMinute) {
-                        feve.setVisibility(View.VISIBLE);
-                        bt_feve.setVisibility(View.INVISIBLE);
-                        feve.setText(selectedHour + ":" + selectedMinute);
-                    }
-                }, hour, minute, false);//Yes 24 hour time
-                mTimePicker.setTitle("Select Time");
-                mTimePicker.show();
-                mTimePicker.getButton(DatePickerDialog.BUTTON_NEGATIVE).setTextColor(ContextCompat.getColor(FirstTime.this, R.color.orange));
-                mTimePicker.getButton(DatePickerDialog.BUTTON_POSITIVE).setTextColor(ContextCompat.getColor(FirstTime.this, R.color.orange));
-                break;
+        add_image.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                checkPermission(Manifest.permission.READ_EXTERNAL_STORAGE, GET_IMAGE);
+            }
+        });
 
-            case R.id.bt_fmor:
-                Calendar mcurrentTime1 = Calendar.getInstance();
-                int hour1 = mcurrentTime1.get(Calendar.HOUR_OF_DAY);
-                int minute1 = mcurrentTime1.get(Calendar.MINUTE);
-                TimePickerDialog mTimePicker1;
-                mTimePicker = new TimePickerDialog(FirstTime.this, R.style.abirStyle, new TimePickerDialog.OnTimeSetListener() {
-                    @Override
-                    public void onTimeSet(TimePicker timePicker, int selectedHour, int selectedMinute) {
-                        fmor.setVisibility(View.VISIBLE);
-                        bt_fmor.setVisibility(View.INVISIBLE);
-                        fmor.setText(selectedHour + ":" + selectedMinute);
-                    }
-                }, hour1, minute1, false);//Yes 24 hour time
-                mTimePicker.setTitle("Select Time");
-                mTimePicker.show();
-                mTimePicker.getButton(DatePickerDialog.BUTTON_NEGATIVE).setTextColor(ContextCompat.getColor(FirstTime.this, R.color.orange));
-                mTimePicker.getButton(DatePickerDialog.BUTTON_POSITIVE).setTextColor(ContextCompat.getColor(FirstTime.this, R.color.orange));
-                break;
+    }
 
-            case R.id.bt_leve:
-                Calendar mcurrentTime2 = Calendar.getInstance();
-                int hour2 = mcurrentTime2.get(Calendar.HOUR_OF_DAY);
-                int minute2 = mcurrentTime2.get(Calendar.MINUTE);
-                TimePickerDialog mTimePicker2;
-                mTimePicker = new TimePickerDialog(FirstTime.this, R.style.abirStyle, new TimePickerDialog.OnTimeSetListener() {
-                    @Override
-                    public void onTimeSet(TimePicker timePicker, int selectedHour, int selectedMinute) {
-                        leve.setVisibility(View.VISIBLE);
-                        bt_leve.setVisibility(View.INVISIBLE);
-                        leve.setText(selectedHour + ":" + selectedMinute);
-                    }
-                }, hour2, minute2, false);//Yes 24 hour time
-                mTimePicker.setTitle("Select Time");
-                mTimePicker.show();
-                mTimePicker.getButton(DatePickerDialog.BUTTON_NEGATIVE).setTextColor(ContextCompat.getColor(FirstTime.this, R.color.orange));
-                mTimePicker.getButton(DatePickerDialog.BUTTON_POSITIVE).setTextColor(ContextCompat.getColor(FirstTime.this, R.color.orange));
-                break;
-
-            case R.id.bt_lmor:
-                Calendar mcurrentTime3 = Calendar.getInstance();
-                int hour3 = mcurrentTime3.get(Calendar.HOUR_OF_DAY);
-                int minute3 = mcurrentTime3.get(Calendar.MINUTE);
-                TimePickerDialog mTimePicker3;
-                mTimePicker = new TimePickerDialog(FirstTime.this, R.style.abirStyle, new TimePickerDialog.OnTimeSetListener() {
-                    @Override
-                    public void onTimeSet(TimePicker timePicker, int selectedHour, int selectedMinute) {
-                        lmor.setVisibility(View.VISIBLE);
-                        bt_lmor.setVisibility(View.INVISIBLE);
-                        lmor.setText(selectedHour + ":" + selectedMinute);
-                    }
-                }, hour3, minute3, false);//Yes 24 hour time
-                mTimePicker.setTitle("Select Time");
-                mTimePicker.show();
-                mTimePicker.getButton(DatePickerDialog.BUTTON_NEGATIVE).setTextColor(ContextCompat.getColor(FirstTime.this, R.color.orange));
-                mTimePicker.getButton(DatePickerDialog.BUTTON_POSITIVE).setTextColor(ContextCompat.getColor(FirstTime.this, R.color.orange));
-                break;
-
-            case R.id.submit:
-                checkPermission(Manifest.permission.ACCESS_FINE_LOCATION, REQUEST_PERMISSION_LOCATION);
-                break;
+    @Override
+    public void onClick(View v) {
+        Chip chip = findViewById(v.getId());
+        if (timing.contains(chip.getText().toString())) {
+            System.out.println("timing = " + timing);
+            timing = timing.replace(chip.getText().toString() + ";", "");
+        } else {
+            System.out.println("timing doesnot contain  = " + timing);
+            timing += chip.getText().toString() + ";";
         }
     }
 
+
+
     private void savethedata() {
         System.out.println("\n inside save the data ");
-        total_token = t_token.getText().toString();
+        total_token = tkn.getText().toString();
         if (total_token.isEmpty())
-            t_token.setError("Enter no. of tokens");
+            tkn.setError("Enter no. of tokens");
+        if (timing.isEmpty())
+            Toast.makeText(FirstTime.this, "Please! Select the Firm Timings.", Toast.LENGTH_SHORT).show();
         if (date == null || date.isEmpty())
             Toast.makeText(FirstTime.this, "Please select a date to start", Toast.LENGTH_SHORT).show();
         if (img == null || img.isEmpty())
@@ -269,28 +232,13 @@ public class FirstTime extends AppCompatActivity implements View.OnClickListener
         if (lat == 0.0)
             Toast.makeText(FirstTime.this, "Please allow location Access\n to get your location", Toast.LENGTH_SHORT).show();
 
-        if (!total_token.isEmpty() && date !=null && !date.isEmpty() &&  img !=null && !img.isEmpty() && lat != 0.0
-                && fmor != null && !fmor.getText().toString().isEmpty()
-                && feve != null && !feve.getText().toString().isEmpty()
-                && leve != null && !leve.getText().toString().isEmpty()
-                && lmor != null && !lmor.getText().toString().isEmpty()) {
-
-            String timming = fmor.getText().toString() + " - " + leve.getText().toString();
-            String ltiming;
-
-
-            if (lmor.getText().toString().equals(feve.getText().toString()))
-                ltiming = "no";
-            else
-                ltiming = feve.getText().toString() + " - " + lmor.getText().toString();
-            ;
+        if (!total_token.isEmpty() && date !=null && !date.isEmpty() &&  img !=null && !img.isEmpty() && lat != 0.0 && !timing.isEmpty()) {
 
             SharedPreferences sharedPreferences = FirstTime.this.getSharedPreferences("user", MODE_PRIVATE);
             sharedPreferences.edit().putString("img", img).apply();
-            sharedPreferences.edit().putString("total_token", total_token).apply();
+            sharedPreferences.edit().putString("total_tokens", total_token).apply();
             sharedPreferences.edit().putString("sdate", date).apply();
-            sharedPreferences.edit().putString("stime", timming).apply();
-            sharedPreferences.edit().putString("ltiming", ltiming).apply();
+            sharedPreferences.edit().putString("stime", timing).apply();
             sharedPreferences.edit().putString("lat", String.valueOf(lat)).apply();
             sharedPreferences.edit().putString("lng", String.valueOf(lng)).apply();
             sharedPreferences.edit().putString("rat", "0,0,0,0,0").apply();
@@ -300,8 +248,7 @@ public class FirstTime extends AppCompatActivity implements View.OnClickListener
 
             SplashScreen.vendor.setTotal_tokens(total_token);
             SplashScreen.vendor.setSdate(date);
-            SplashScreen.vendor.setStime(timming);
-            SplashScreen.vendor.setLtiming(ltiming);
+            SplashScreen.vendor.setStime(timing);
             SplashScreen.vendor.setLat(lat);
             SplashScreen.vendor.setLng(lng);
             SplashScreen.vendor.setRat("0,0,0,0,0");
@@ -313,10 +260,6 @@ public class FirstTime extends AppCompatActivity implements View.OnClickListener
 
             saveDataToStorage();
             saveDataToSepDB();
-            
-            DatabaseReference orders = FirebaseDatabase.getInstance().getReference("orders/" + SplashScreen.vendor.getUID());
-            orders.child("tkn").setValue(0);
-            orders.child("tkn_d").setValue(0);
 
             startActivity(new Intent(FirstTime.this, MainActivity.class));
         } else {
@@ -330,6 +273,8 @@ public class FirstTime extends AppCompatActivity implements View.OnClickListener
                 SplashScreen.vendor.getUID(),
                 SplashScreen.vendor.getLat(),
                 SplashScreen.vendor.getLng());
+
+        System.out.println("det lat = "+ det.getLat() + "det lng = " + det.getLng());
 
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference("det");
         ref.child("vendors").child(SplashScreen.vendor.getCat()).child(SplashScreen.vendor.getUID()).setValue(det);

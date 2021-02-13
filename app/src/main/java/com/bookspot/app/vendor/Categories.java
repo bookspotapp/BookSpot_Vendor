@@ -23,8 +23,8 @@ public class Categories extends AppCompatActivity {
     ImageView back ;
     RecyclerView categories_rv;
 
-    ArrayList categories = new ArrayList<>(Arrays.asList("Gyms", "Restraunts", "Salons", "Clinics", "Diagnostic Centres", "Service Centres", "Banks", "Retails"));
-    ArrayList images = new ArrayList<>(Arrays.asList(R.drawable.gym, R.drawable.restraunt, R.drawable.salon, R.drawable.clinic, R.drawable.diagnostic, R.drawable.service, R.drawable.bank, R.drawable.retail));
+    ArrayList categories = new ArrayList<>(Arrays.asList("Gyms & Turfs", "Restaurants", "Salons", "Doctors", "Diagnostic Centres", "Service Centres", "Banks", "Retails", "Government Offices"));
+    ArrayList images = new ArrayList<>(Arrays.asList(R.drawable.gym, R.drawable.restraunt, R.drawable.salon, R.drawable.doctor, R.drawable.diagnostic, R.drawable.service, R.drawable.bank, R.drawable.retail, R.drawable.govt));
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

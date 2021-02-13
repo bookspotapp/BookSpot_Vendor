@@ -24,10 +24,10 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:src="@drawable/right"
-                app:layout_constraintBottom_toBottomOf="@+id/select_cv"
-                app:layout_constraintEnd_toEndOf="@+id/select_cv"
-                app:layout_constraintStart_toStartOf="@+id/select_cv"
-                app:layout_constraintTop_toTopOf="@+id/select_cv" />
+                app:layout_constraintBottom_toBottomOf="@+id/select_text"
+                app:layout_constraintEnd_toEndOf="@+id/select_text"
+                app:layout_constraintStart_toStartOf="@+id/select_text"
+                app:layout_constraintTop_toTopOf="@+id/select_text" />
 
             <TextView
                 android:id="@+id/name"
@@ -41,25 +41,18 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
-            <androidx.cardview.widget.CardView
-                android:id="@+id/select_cv"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="10dp"
-                app:cardCornerRadius="30dp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent">
-
-                <TextView
-                    android:id="@+id/select_text"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="10sp"
-                    android:text="Select"
-                    android:textColor="@color/orange"
-                    android:textSize="15sp" />
-            </androidx.cardview.widget.CardView>
+           <com.google.android.material.button.MaterialButton
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content"
+               android:text="Select"
+               android:id="@+id/select_text"
+               app:cornerRadius="20dp"
+               app:strokeWidth="2dp"
+               app:strokeColor="@color/orange"
+               android:textColor="@color/orange"
+               app:layout_constraintEnd_toEndOf="parent"
+               app:layout_constraintTop_toTopOf="parent"
+               app:layout_constraintBottom_toBottomOf="parent"/>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.cardview.widget.CardView>

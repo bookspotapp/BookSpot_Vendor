@@ -8,6 +8,51 @@
   "client": [
     {
       "client_info": {
+        "mobilesdk_app_id": "1:889048432333:android:181b59bdc287f213427384",
+        "android_client_info": {
+          "package_name": "com.bookspot.app.customer"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "889048432333-12phttodcqg0ulg6tjrde0nqqfuu12sv.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.bookspot.app.customer",
+            "certificate_hash": "f49660be06c8ea93f2933af419ff87f3c2bf5c7e"
+          }
+        },
+        {
+          "client_id": "889048432333-7t5itoqvtsiu7knvkj2m5giq3m2tpn6p.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.bookspot.app.customer",
+            "certificate_hash": "d139aed58df21d8468e0b5495f6ae1a6b476d9d0"
+          }
+        },
+        {
+          "client_id": "889048432333-da93olec21pb1npkvhu7rm0t66ud4tl9.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCrAn1vCSOxGMukru9B64FdOktxB9MEcu4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "889048432333-da93olec21pb1npkvhu7rm0t66ud4tl9.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
         "mobilesdk_app_id": "1:889048432333:android:089b27038b370a00427384",
         "android_client_info": {
           "package_name": "com.bookspot.app.vendor"
@@ -20,6 +65,22 @@
           "android_info": {
             "package_name": "com.bookspot.app.vendor",
             "certificate_hash": "d139aed58df21d8468e0b5495f6ae1a6b476d9d0"
+          }
+        },
+        {
+          "client_id": "889048432333-8bskncep6elu78liun003tivk6b31oie.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.bookspot.app.vendor",
+            "certificate_hash": "51e3e8528ef18c20aeb7cf539d517dd6cbfb98f0"
+          }
+        },
+        {
+          "client_id": "889048432333-cphl9jlu35dge908emr06gro59gia87e.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.bookspot.app.vendor",
+            "certificate_hash": "751f05a8a92044139e918e262a8dc816502c6332"
           }
         },
         {
